@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10^100 Search</title>
+
+<style>
+    body {
+        margin: 0;
+        background: #fff;
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+
+    .container {
+        margin-top: 150px;
+    }
+
+    .logo {
+        font-size: 65px;
+        font-weight: bold;
+        color: #4285F4;
+        margin-bottom: 30px;
+    }
+
+    .search-box {
+        width: 500px;
+        max-width: 80%;
+        padding: 15px 20px;
+        border: 1px solid #ddd;
+        border-radius: 30px;
+        font-size: 20px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .search-box:hover {
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    button {
+        margin: 25px 5px;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 5px;
+        background: #f2f2f2;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    button:hover {
+        background: #e5e5e5;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">10<sup>100</sup></div>
+
+    <input
+        class="search-box"
+        type="text"
+        value="10^100"
+        id="search"
+    >
+
+    <br>
+
+    <button onclick="searchGoogle()">検索</button>
+    <button onclick="lucky()">I'm Feeling Lucky</button>
+
+</div>
+
+<script>
+    function searchGoogle() {
+        const query = document.getElementById("search").value;
+        window.open(
+            "https://www.google.com/search?q=" +
+            encodeURIComponent(query),
+            "_blank"
+        );
+    }
+
+    function lucky() {
+        const query = document.getElementById("search").value;
+        window.open(
+            "https://www.google.com/search?q=" +
+            encodeURIComponent(query) + "&btnI=1",
+            "_blank"
+        );
+    }
+</script>
+
+</body>
+</html>
