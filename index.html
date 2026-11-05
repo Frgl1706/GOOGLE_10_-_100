@@ -7,93 +7,460 @@
 <title>10^100 Search</title>
 
 <style>
-    body {
-        margin: 0;
-        background: #fff;
-        font-family: Arial, sans-serif;
-        text-align: center;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    .container {
-        margin-top: 150px;
-    }
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: white;
+    background:
+        linear-gradient(rgba(0,0,0,.18), rgba(0,0,0,.35)),
+        url("BG.png") center/cover fixed;
+    overflow-x: hidden;
+}
 
-    .logo {
-        font-size: 65px;
-        font-weight: bold;
-        color: #4285F4;
-        margin-bottom: 30px;
-    }
+/* ヘッダー */
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 75px;
+    padding: 0 30px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 25px;
+    z-index: 100;
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255,255,255,.2);
+}
 
-    .search-box {
-        width: 500px;
-        max-width: 80%;
-        padding: 15px 20px;
-        border: 1px solid #ddd;
-        border-radius: 30px;
-        font-size: 20px;
-        outline: none;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
+header a, .header-button {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+}
 
-    .search-box:hover {
-        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    }
+.header-button:hover, header a:hover {
+    opacity: .7;
+}
 
-    button {
-        margin: 25px 5px;
-        padding: 12px 25px;
-        border: none;
-        border-radius: 5px;
-        background: #f2f2f2;
-        cursor: pointer;
-        font-size: 14px;
-    }
+/* アカウントアイコン */
+.account {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,.7);
+    cursor: pointer;
+}
 
-    button:hover {
-        background: #e5e5e5;
-    }
+.account img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* アプリ一覧 */
+.popup {
+    display: none;
+    position: absolute;
+    top: 65px;
+    right: 25px;
+    width: 250px;
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.3);
+    backdrop-filter: blur(25px);
+    box-shadow: 0 10px 40px rgba(0,0,0,.2);
+}
+
+.popup.active {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    animation: popupIn .25s ease;
+}
+
+.popup-item {
+    text-align: center;
+    padding: 12px 5px;
+    border-radius: 12px;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+}
+
+.popup-item:hover {
+    background: rgba(255,255,255,.2);
+}
+
+@keyframes popupIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* メイン */
+main {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 100px 20px 40px;
+    text-align: center;
+}
+
+.logo {
+    font-size: clamp(65px, 10vw, 110px);
+    font-weight: bold;
+    letter-spacing: -5px;
+    text-shadow: 0 5px 25px rgba(0,0,0,.2);
+    animation: fadeIn 1.2s ease;
+}
+
+.logo sup {
+    font-size: .4em;
+    vertical-align: super;
+}
+
+.subtitle {
+    font-size: 14px;
+    letter-spacing: 5px;
+    margin-top: 10px;
+    opacity: .85;
+}
+
+/* 検索ボックス */
+.search-container {
+    margin-top: 40px;
+    width: min(600px, 90vw);
+    padding: 7px;
+    display: flex;
+    align-items: center;
+    border-radius: 50px;
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.4);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    box-shadow: 0 10px 40px rgba(0,0,0,.15);
+    transition: .3s;
+}
+
+.search-container:focus-within {
+    background: rgba(255,255,255,.3);
+    box-shadow: 0 0 30px rgba(255,255,255,.25);
+    transform: scale(1.02);
+}
+
+.search-container input {
+    flex: 1;
+    min-width: 0;
+    padding: 15px 20px;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: white;
+    font-size: 17px;
+}
+
+.search-container input::placeholder {
+    color: rgba(255,255,255,.7);
+}
+
+.search-button {
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255,255,255,.25);
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background: rgba(255,255,255,.45);
+}
+
+/* ボタン */
+.buttons {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+}
+
+.glass-button {
+    padding: 13px 22px;
+    color: white;
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 12px;
+    backdrop-filter: blur(15px);
+    cursor: pointer;
+    transition: .3s;
+}
+
+.glass-button:hover {
+    background: rgba(255,255,255,.3);
+    transform: translateY(-3px);
+}
+
+/* スクロールセクション */
+section {
+    min-height: 75vh;
+    padding: 100px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.glass-card {
+    max-width: 700px;
+    padding: 50px;
+    border-radius: 25px;
+    background: rgba(255,255,255,.13);
+    border: 1px solid rgba(255,255,255,.3);
+    backdrop-filter: blur(25px);
+    box-shadow: 0 15px 50px rgba(0,0,0,.15);
+}
+
+/* スクロールアニメーション */
+.reveal {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity .8s ease, transform .8s ease;
+}
+
+.reveal.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+footer {
+    padding: 30px;
+    text-align: center;
+    background: rgba(0,0,0,.15);
+    backdrop-filter: blur(15px);
+    font-size: 12px;
+}
+
+/* フェード */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media(max-width:600px) {
+    header { padding: 0 15px; gap: 15px; }
+    .glass-card { padding: 30px 20px; }
+}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<header>
+
+    <a href="mailto:" onclick="return mailAction(event)">
+        10<sup>100</sup>Mail
+    </a>
+
+    <div class="header-button" onclick="toggleApps(event)">
+        アプリ一覧 ▦
+    </div>
+
+    <div class="account" onclick="toggleAccount(event)">
+        <img src="10100icon.jpg" alt="10^100 Account">
+    </div>
+
+    <div class="popup" id="apps">
+        <a class="popup-item" href="#" onclick="showMessage('10^100 Search')">🔍<br>Search</a>
+        <a class="popup-item" href="mailto:" onclick="return mailAction(event)">✉️<br>Mail</a>
+        <a class="popup-item" href="#" onclick="showMessage('10^100 Drive')">📁<br>Drive</a>
+        <a class="popup-item" href="#" onclick="showMessage('10^100 Images')">🖼️<br>Images</a>
+    </div>
+
+    <div class="popup" id="account">
+        <div style="grid-column:span 2;text-align:center">
+            <img src="10100icon.jpg"
+                 width="70" height="70"
+                 style="border-radius:50%">
+            <p><b>10<sup>100</sup> Account</b></p>
+            <small>Welcome to 10^100</small>
+        </div>
+    </div>
+
+</header>
+
+<main>
 
     <div class="logo">10<sup>100</sup></div>
 
-    <input
-        class="search-box"
-        type="text"
-        value="10^100"
-        id="search"
-    >
+    <div class="subtitle">INFINITE POSSIBILITIES</div>
 
-    <br>
+    <form class="search-container" onsubmit="search(event)">
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="Search 10^100..."
+            autocomplete="off">
+        <button class="search-button" type="submit">⌕</button>
+    </form>
 
-    <button onclick="searchGoogle()">検索</button>
-    <button onclick="lucky()">I'm Feeling Lucky</button>
+    <div class="buttons">
+        <button class="glass-button" onclick="searchGoogle()">
+            Google Search
+        </button>
 
-</div>
+        <button class="glass-button" onclick="lucky()">
+            I'm Feeling Lucky
+        </button>
+    </div>
+
+</main>
+
+<section>
+    <div class="glass-card reveal">
+        <h1>Welcome to 10<sup>100</sup></h1>
+        <p>
+            Discover a universe of information.
+            Your search journey starts here.
+        </p>
+    </div>
+</section>
+
+<section>
+    <div class="glass-card reveal">
+        <h1>Beyond Infinity.</h1>
+        <p>
+            10<sup>100</sup> — A number beyond imagination.
+        </p>
+    </div>
+</section>
+
+<footer>
+    © 2026 10^100 Project
+</footer>
 
 <script>
-    function searchGoogle() {
-        const query = document.getElementById("search").value;
-        window.open(
-            "https://www.google.com/search?q=" +
-            encodeURIComponent(query),
-            "_blank"
-        );
-    }
 
-    function lucky() {
-        const query = document.getElementById("search").value;
-        window.open(
-            "https://www.google.com/search?q=" +
-            encodeURIComponent(query) + "&btnI=1",
-            "_blank"
-        );
+/* ハプティクス */
+function haptic() {
+    if (navigator.vibrate) {
+        navigator.vibrate(20);
     }
+}
+
+/* アプリ一覧 */
+function toggleApps(event) {
+    haptic();
+    event.stopPropagation();
+
+    const apps = document.getElementById("apps");
+    const account = document.getElementById("account");
+
+    apps.classList.toggle("active");
+    account.classList.remove("active");
+}
+
+/* アカウント */
+function toggleAccount(event) {
+    haptic();
+    event.stopPropagation();
+
+    const account = document.getElementById("account");
+    const apps = document.getElementById("apps");
+
+    account.classList.toggle("active");
+    apps.classList.remove("active");
+}
+
+/* 外側クリックで閉じる */
+document.addEventListener("click", function() {
+    document.getElementById("apps").classList.remove("active");
+    document.getElementById("account").classList.remove("active");
+});
+
+/* 検索 */
+function search(event) {
+    event.preventDefault();
+    searchGoogle();
+}
+
+function searchGoogle() {
+    haptic();
+
+    const query = document.getElementById("searchInput").value;
+
+    if (!query.trim()) return;
+
+    window.open(
+        "https://www.google.com/search?q=" +
+        encodeURIComponent(query),
+        "_blank"
+    );
+}
+
+function lucky() {
+    haptic();
+
+    const query = document.getElementById("searchInput").value;
+
+    if (!query.trim()) return;
+
+    window.open(
+        "https://www.google.com/search?q=" +
+        encodeURIComponent(query) + "&btnI=1",
+        "_blank"
+    );
+}
+
+/* Mail */
+function mailAction(event) {
+    haptic();
+    event.preventDefault();
+
+    showMessage("10^100Mail はメールサービスの接続設定が必要です。");
+    return false;
+}
+
+/* メッセージ */
+function showMessage(message) {
+    haptic();
+    alert(message);
+}
+
+/* スクロールアニメーション */
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add("show");
+        }
+    });
+}, {
+    threshold: 0.15
+});
+
+document.querySelectorAll(".reveal").forEach(element => {
+    observer.observe(element);
+});
+
+/* スクロール時の背景移動 */
+window.addEventListener("scroll", () => {
+    const offset = window.scrollY;
+    document.body.style.backgroundPosition =
+        `center ${offset * 0.25}px`;
+});
+
 </script>
 
 </body>
