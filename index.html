@@ -31,20 +31,37 @@ body {
   overflow-x: hidden;
   isolation: isolate;
 }
-/* 背景画像は白いページの上に81%で重ね、レンズブラーを適用 */
+/* 背景画像スライドショー：白い下地に画像を重ね、ブラーを適用 */
 body::before {
   content: "";
   position: fixed;
   inset: -24px;
+  z-index: -3;
+  background: linear-gradient(135deg,#f5f9ff,#dceaff);
+  pointer-events: none;
+}
+.background-slideshow {
+  position: fixed;
+  inset: 0;
   z-index: -2;
-  background-image: var(--page-bg, linear-gradient(135deg,#f5f9ff,#dceaff));
-  background-size: cover;
+  overflow: hidden;
+  pointer-events: none;
+  background: #fff;
+}
+.background-layer {
+  position: absolute;
+  inset: -24px;
   background-position: center;
+  background-size: cover;
   background-repeat: no-repeat;
   filter: blur(18px) saturate(1.08) brightness(1.05);
+  opacity: 0;
+  transform: scale(1.06);
+  transition: opacity 2.2s ease;
+  will-change: opacity;
+}
+.background-layer.is-active {
   opacity: .81;
-  transform: scale(1.05);
-  pointer-events: none;
 }
 body::after {
   content: "";
@@ -161,6 +178,45 @@ main.home-main {
 .reveal { opacity: 0; transform: translateY(45px); transition: opacity .8s ease, transform .8s ease; }
 .reveal.show { opacity: 1; transform: translateY(0); }
 footer { padding: 27px; text-align: center; color: #8a99ad; font-size: 11px; background: rgba(255,255,255,.86); backdrop-filter: blur(15px); border-top: 1px solid #fff; }
+
+
+/* Scroll progression and repeatable reveal motion */
+.scroll-progress {
+  position: fixed;
+  top: 44px;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  z-index: 120;
+  background: linear-gradient(90deg,#fff,#77c7e5,#3977d5);
+  box-shadow: 0 1px 8px rgba(30,91,150,.28);
+  transition: width .08s linear;
+  pointer-events: none;
+}
+.scroll-reveal {
+  opacity: 0;
+  transform: translate3d(0,48px,0) scale(.985);
+  filter: blur(3px);
+  transition:
+    opacity .9s cubic-bezier(.2,.7,.2,1),
+    transform .9s cubic-bezier(.2,.7,.2,1),
+    filter .9s cubic-bezier(.2,.7,.2,1);
+}
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0,0,0) scale(1);
+  filter: blur(0);
+}
+.hero-brand.scroll-reveal { transition-delay: .04s; }
+.hero-copy-right.scroll-reveal { transition-delay: .16s; }
+.hero-copy-left.scroll-reveal { transition-delay: .08s; }
+.hero-brand-right.scroll-reveal { transition-delay: .2s; }
+.scroll-cue { color: #fff; text-shadow: 0 1px 8px rgba(4,17,35,.8); }
+@media(prefers-reduced-motion:reduce) {
+  .background-layer { transition: none; }
+  .scroll-progress { display: none; }
+  .scroll-reveal { opacity: 1; transform: none; filter: none; transition: none; }
+}
 
 /* Assistant */
 .assistant-panel {
@@ -378,13 +434,14 @@ header {
   width: min(360px, 100%);
   max-height: 210px;
   object-fit: contain;
-  filter: none;
+  filter: brightness(0) invert(1) drop-shadow(0 8px 13px rgba(6,18,36,.62));
   transform: translate3d(0, var(--hero-parallax, 0px), 0);
   will-change: transform;
 }
 .hero-banner-large { width: min(390px, 100%); max-height: 235px; }
 .hero-logo-fallback {
-  color: #050505;
+  color: #fff;
+  text-shadow: 0 5px 18px rgba(8,20,38,.62), 0 1px 3px rgba(8,20,38,.65);
   font-family: Arial, sans-serif;
   font-size: clamp(92px, 13vw, 150px);
   font-weight: 700;
@@ -396,7 +453,8 @@ header {
 .hero-copy { min-width: 0; }
 .hero-copy h1,
 .hero-copy h2 {
-  color: #080808;
+  color: #fff;
+  text-shadow: 0 3px 12px rgba(7,18,35,.72), 0 1px 3px rgba(7,18,35,.62);
   font-size: clamp(23px, 2.5vw, 32px);
   font-weight: 700;
   line-height: 1.45;
@@ -405,7 +463,8 @@ header {
 .hero-copy p {
   max-width: 330px;
   margin-top: 29px;
-  color: #858585;
+  color: rgba(255,255,255,.97);
+  text-shadow: 0 2px 9px rgba(7,18,35,.78), 0 1px 2px rgba(7,18,35,.65);
   font-size: clamp(14px, 1.45vw, 17px);
   font-weight: 700;
   line-height: 1.55;
@@ -434,8 +493,12 @@ header {
   padding: 9px 17px;
   border: 1px solid #e9edf3;
   border-radius: 18px;
-  background: rgba(255,255,255,.94);
-  color: #6d7785;
+  background: rgba(18,39,68,.42);
+  color: #fff;
+  text-shadow: 0 1px 5px rgba(0,0,0,.65);
+  border-color: rgba(255,255,255,.42);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -461,13 +524,17 @@ header {
   border: 1px solid #e8edf4;
   border-radius: 20px;
   color: #62758e;
-  background: rgba(255,255,255,.88);
+  background: rgba(18,39,68,.40);
+  color: #fff;
+  text-shadow: 0 1px 5px rgba(0,0,0,.68);
+  border-color: rgba(255,255,255,.38);
+  backdrop-filter: blur(10px);
   font-size: 11px;
   cursor: pointer;
   transition: .2s;
 }
-.welcome-links button:hover { color: var(--blue); background: #fff; transform: translateY(-2px); }
-.welcome-links .material-symbols-rounded { font-size: 16px; }
+.welcome-links button:hover { color: #fff; background: rgba(18,39,68,.68); transform: translateY(-2px); }
+.welcome-links .material-symbols-rounded { color: #fff; font-size: 16px; text-shadow: 0 1px 5px rgba(0,0,0,.65); }
 .scroll-cue {
   position: absolute;
   bottom: 20px;
@@ -476,7 +543,8 @@ header {
   display: flex;
   align-items: center;
   gap: 5px;
-  color: #a0afbf;
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(4,17,35,.8);
   font-size: 9px;
   letter-spacing: 2px;
   animation: cueFloat 1.8s ease-in-out infinite;
@@ -492,7 +560,7 @@ header {
   transform: translate3d(0,0,0);
 }
 .hero-copy-right.scroll-reveal { transition-delay: .12s; }
-.hero-banner-large { filter: drop-shadow(0 12px 18px rgba(20,30,50,.045)); }
+.hero-banner-large { filter: brightness(0) invert(1) drop-shadow(0 9px 16px rgba(6,18,36,.62)); }
 .home-search-modal .modal-box { width: min(460px,100%); }
 @keyframes cueFloat {
   0%,100% { transform: translate(-50%,0); }
@@ -534,9 +602,65 @@ header {
   .scroll-cue { animation: none; }
 }
 
+
+/* 最終上書き：スクロール時に毎回フェード・スライド表示 */
+.scroll-reveal {
+  opacity: 0;
+  transform: translate3d(0, 52px, 0) scale(.985);
+  filter: blur(4px);
+  transition:
+    opacity .9s cubic-bezier(.2,.7,.2,1),
+    transform .9s cubic-bezier(.2,.7,.2,1),
+    filter .9s cubic-bezier(.2,.7,.2,1);
+  will-change: opacity, transform, filter;
+}
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0,0,0) scale(1);
+  filter: blur(0);
+}
+.hero-brand.scroll-reveal { transition-delay: .05s; }
+.hero-copy-right.scroll-reveal { transition-delay: .18s; }
+.hero-copy-left.scroll-reveal { transition-delay: .08s; }
+.hero-brand-right.scroll-reveal { transition-delay: .2s; }
+.hero-action-row.scroll-reveal { transition-delay: .04s; }
+
+/* 白い見出し・ロゴを背景上で読みやすくする */
+.hero-copy h1,
+.hero-copy h2,
+.hero-copy p,
+.hero-logo-fallback,
+.scroll-cue {
+  color: #fff;
+  text-shadow: 0 3px 12px rgba(5,16,32,.78), 0 1px 3px rgba(5,16,32,.72);
+}
+.hero-banner,
+.hero-banner-large {
+  filter: brightness(0) invert(1) drop-shadow(0 8px 14px rgba(5,16,32,.68));
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+    will-change: auto;
+  }
+  .background-layer { transition: none; }
+  .scroll-progress { display: none; }
+}
+
 </style>
 </head>
 <body>
+
+<!-- Rotating background layers -->
+<div class="background-slideshow" aria-hidden="true">
+  <div class="background-layer is-active" id="backgroundLayerA"></div>
+  <div class="background-layer" id="backgroundLayerB"></div>
+</div>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
 <header>
   <div class="header-left">
@@ -605,11 +729,11 @@ header {
   <!-- Hero 1: logo left, message right (reference image 1) -->
   <section class="hero-panel hero-panel-one scroll-section" id="heroIntro" aria-label="10^100 トップ">
     <div class="hero-layout">
-      <div class="hero-brand scroll-reveal is-visible">
+      <div class="hero-brand scroll-reveal">
         <img src="10100_Banner.png" class="hero-banner" alt="10^100" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
         <div class="hero-logo-fallback" style="display:none">10<sup>100</sup></div>
       </div>
-      <div class="hero-copy hero-copy-right scroll-reveal is-visible">
+      <div class="hero-copy hero-copy-right scroll-reveal">
         <h1>想像を超える、その先へ。</h1>
         <p>あなたの情報とアプリケーションを、10<sup>100</sup>の共通アカウントでまとめて管理します。</p>
       </div>
@@ -955,22 +1079,80 @@ document.addEventListener("click", event => {
 });
 
 /* =====================================================
-   3. Background image loading
-   Priority: BG.png -> BG_fallback.jpg -> remote Unsplash -> gradient
+   3. Time-based random background slideshow
+   BG.png / BG_fallback.jpg are tried first. If unavailable,
+   the page uses a pool of 12 Unsplash backgrounds.
 ===================================================== */
-const remoteBackground = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2400&q=85";
-function loadBackground(candidates, index = 0) {
-  if (index >= candidates.length) {
-    document.documentElement.style.setProperty("--page-bg", "linear-gradient(135deg,#f5f9ff,#dceaff)");
-    return;
+const BACKGROUND_POOL = [
+  "BG.png",
+  "BG_fallback.jpg",
+  "https://images.unsplash.com/photo-1724405143873-cdaa5cac918e?auto=format&fit=crop&w=2200&q=82",
+  "https://images.unsplash.com/photo-1759914514194-b5883244e683?auto=format&fit=crop&w=2200&q=82",
+  "https://images.unsplash.com/photo-1760865245520-21b0786f5236?auto=format&fit=crop&w=2200&q=82",
+  "https://images.unsplash.com/photo-1749544811209-ad251ef039f1?auto=format&fit=crop&w=2200&q=82",
+  "https://images.unsplash.com/photo-1749877217773-6c844c38c874?auto=format&fit=crop&w=2200&q=82",
+  "https://images.unsplash.com/photo-1790799012237-accca3ba9338?auto=format&fit=crop&w=2200&q=82",
+  "https://images.unsplash.com/photo-1761888857230-1659946aaa8b?auto=format&fit=crop&w=2200&q=82",
+  "https://images.unsplash.com/photo-1755502046743-78265e184cc3?auto=format&fit=crop&w=2200&q=82",
+  "https://images.unsplash.com/photo-1739055999268-c393f3109602?auto=format&fit=crop&w=2200&q=82",
+  "https://images.unsplash.com/photo-1774084430093-79fcfebb60af?auto=format&fit=crop&w=2200&q=82",
+  "https://images.unsplash.com/photo-1706523869978-e084f4658729?auto=format&fit=crop&w=2200&q=82",
+  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2200&q=82"
+];
+const backgroundLayers = [
+  document.getElementById("backgroundLayerA"),
+  document.getElementById("backgroundLayerB")
+];
+let activeBackgroundLayer = 0;
+let currentBackgroundIndex = -1;
+let backgroundRotationTimer = null;
+const BACKGROUND_INTERVAL_MS = 30000;
+
+function randomBackgroundIndexes() {
+  const indexes = BACKGROUND_POOL.map((_, index) => index)
+    .filter(index => index !== currentBackgroundIndex);
+  for (let i = indexes.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indexes[i], indexes[j]] = [indexes[j], indexes[i]];
   }
-  const source = candidates[index];
-  const image = new Image();
-  image.onload = () => document.documentElement.style.setProperty("--page-bg", `url("${source}")`);
-  image.onerror = () => loadBackground(candidates, index + 1);
-  image.src = source;
+  return indexes;
 }
-loadBackground(["BG.png", "BG_fallback.jpg", remoteBackground]);
+
+function applyBackgroundAt(index, remainingIndexes, initial = false) {
+  const source = BACKGROUND_POOL[index];
+  const probe = new Image();
+  probe.onload = () => {
+    const nextLayer = 1 - activeBackgroundLayer;
+    backgroundLayers[nextLayer].style.backgroundImage = `url("${source}")`;
+    backgroundLayers[nextLayer].classList.add("is-active");
+    backgroundLayers[activeBackgroundLayer].classList.remove("is-active");
+    activeBackgroundLayer = nextLayer;
+    currentBackgroundIndex = index;
+    if (initial && !backgroundRotationTimer) {
+      backgroundRotationTimer = window.setInterval(rotateBackground, BACKGROUND_INTERVAL_MS);
+    }
+  };
+  probe.onerror = () => {
+    if (remainingIndexes.length) {
+      applyBackgroundAt(remainingIndexes.shift(), remainingIndexes, initial);
+    } else {
+      document.body.classList.add("background-fallback");
+      if (initial && !backgroundRotationTimer) {
+        backgroundRotationTimer = window.setInterval(rotateBackground, BACKGROUND_INTERVAL_MS);
+      }
+    }
+  };
+  probe.src = source;
+}
+
+function rotateBackground() {
+  const candidates = randomBackgroundIndexes();
+  if (!candidates.length) return;
+  applyBackgroundAt(candidates.shift(), candidates, false);
+}
+
+// First try the user's BG.png, then the optional local backup, then random web images.
+applyBackgroundAt(0, BACKGROUND_POOL.slice(1).map((_, index) => index + 1), true);
 
 /* =====================================================
    4. App navigation
@@ -1402,24 +1584,24 @@ document.addEventListener("click", event => {
 ===================================================== */
 const scrollObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
-    if (!entry.isIntersecting) return;
-
     if (entry.target.classList.contains("scroll-reveal")) {
-      entry.target.classList.add("is-visible");
+      // Reveal while entering the viewport; hide after leaving so it can animate again.
+      entry.target.classList.toggle("is-visible", entry.isIntersecting);
     }
 
     if (
+      entry.isIntersecting &&
       entry.target.classList.contains("scroll-section") &&
       entry.intersectionRatio >= 0.5
     ) {
       const sectionId = entry.target.id || "section";
       if (scrollHapticsArmed && activeScrollSection !== sectionId) {
         activeScrollSection = sectionId;
-        haptic(9);
+        haptic(12);
       }
     }
   });
-}, { threshold: [0.15, 0.5, 0.72] });
+}, { threshold: [0, 0.15, 0.5, 0.72], rootMargin: "-8% 0px -8% 0px" });
 
 document.querySelectorAll(".scroll-reveal, .scroll-section").forEach(element => {
   scrollObserver.observe(element);
@@ -1429,6 +1611,17 @@ document.querySelectorAll(".scroll-reveal, .scroll-section").forEach(element => 
 window.addEventListener("scroll", () => {
   scrollHapticsArmed = true;
 }, { passive: true, once: true });
+
+function updateScrollProgress() {
+  const root = document.documentElement;
+  const maxScroll = root.scrollHeight - window.innerHeight;
+  const progress = maxScroll > 0 ? (window.scrollY / maxScroll) * 100 : 0;
+  const bar = document.getElementById("scrollProgress");
+  if (bar) bar.style.width = `${Math.max(0, Math.min(100, progress))}%`;
+}
+window.addEventListener("scroll", updateScrollProgress, { passive: true });
+window.addEventListener("resize", updateScrollProgress);
+updateScrollProgress();
 
 // Very subtle logo parallax, independent of the page background image.
 let parallaxFrame = false;
