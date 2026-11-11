@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#f5f8ff">
+<meta name="theme-color" content="#eaf5fb">
 <title>10^100</title>
 
 <!-- Google Material Symbols / Noto Sans JP -->
@@ -54,14 +54,14 @@ body::before {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  filter: blur(18px) saturate(1.08) brightness(1.05);
+  filter: blur(var(--background-blur, 18px)) saturate(1.08) brightness(1.05);
   opacity: 0;
   transform: scale(1.06);
   transition: opacity 2.2s ease;
   will-change: opacity;
 }
 .background-layer.is-active {
-  opacity: .81;
+  opacity: var(--background-opacity, .81);
 }
 body::after {
   content: "";
@@ -651,6 +651,227 @@ header {
   .scroll-progress { display: none; }
 }
 
+
+
+/* =====================================================
+   Google-like home top + hover detail areas
+===================================================== */
+.google-home-hero {
+  position: relative;
+  min-height: 100svh;
+  padding: 112px 22px 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: start;
+}
+.google-home-inner {
+  width: min(760px,100%);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.home-brand-wrap { width: 100%; display: flex; justify-content: center; align-items: center; }
+.home-brand-banner {
+  display: block;
+  width: min(360px,72vw);
+  max-height: 155px;
+  object-fit: contain;
+  filter: brightness(0) invert(1) drop-shadow(0 8px 15px rgba(5,16,32,.72));
+}
+.home-brand-fallback {
+  color: #fff;
+  font: 800 clamp(76px,12vw,116px)/.95 Arial,sans-serif;
+  letter-spacing: -7px;
+  text-shadow: 0 5px 18px rgba(5,16,32,.72),0 1px 3px rgba(5,16,32,.78);
+}
+.home-brand-fallback sup { font-size: .38em; vertical-align: super; }
+.home-tagline {
+  margin-top: 15px;
+  color: #fff;
+  font-size: clamp(15px,2vw,19px);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-shadow: 0 2px 10px rgba(4,16,33,.78);
+}
+.google-search-bar {
+  width: min(620px,92vw);
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 34px;
+  padding: 5px 8px 5px 19px;
+  border: 1px solid rgba(255,255,255,.92);
+  border-radius: 32px;
+  background: rgba(255,255,255,.91);
+  box-shadow: 0 10px 32px rgba(13,35,64,.17);
+  backdrop-filter: blur(18px);
+  transition: .25s ease;
+}
+.google-search-bar:focus-within {
+  background: rgba(255,255,255,.98);
+  box-shadow: 0 0 0 4px rgba(255,255,255,.18),0 12px 38px rgba(13,35,64,.22);
+  transform: translateY(-2px);
+}
+.google-search-bar .search-leading-icon { color: #73849a; font-size: 23px; }
+.google-search-bar input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; color: #24344b; font-size: 15px; }
+.google-search-bar input::placeholder { color: #9aa7b7; }
+.google-search-bar > button { width: 44px; height: 44px; border: 0; border-radius: 50%; display: grid; place-items: center; color: #fff; background: var(--blue); cursor: pointer; transition: .2s; }
+.google-search-bar > button:hover { background: var(--blue-dark); transform: scale(1.05); }
+.home-search-actions { display: flex; gap: 12px; margin-top: 19px; flex-wrap: wrap; justify-content: center; }
+.home-action-button {
+  min-width: 165px;
+  padding: 11px 21px;
+  border: 1px solid rgba(255,255,255,.85);
+  border-radius: 9px;
+  color: #fff;
+  background: rgba(19,42,72,.56);
+  box-shadow: 0 5px 18px rgba(6,18,36,.12);
+  text-shadow: 0 1px 5px rgba(0,0,0,.62);
+  backdrop-filter: blur(13px);
+  cursor: pointer;
+  transition: .22s ease;
+  font-size: 13px;
+  font-weight: 600;
+}
+.home-action-button:hover { background: rgba(255,255,255,.94); color: #28496d; text-shadow: none; transform: translateY(-2px); }
+.recommended-searches {
+  width: min(620px,92vw);
+  max-height: 0;
+  margin-top: 0;
+  padding: 0 18px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 17px;
+  background: rgba(255,255,255,0);
+  opacity: 0;
+  transform: translateY(-7px);
+  transition: max-height .35s ease,opacity .3s ease,transform .3s ease,margin .3s ease,padding .3s ease,background .3s ease;
+}
+.recommended-searches.open {
+  max-height: 180px;
+  margin-top: 15px;
+  padding: 14px 18px;
+  opacity: 1;
+  transform: translateY(0);
+  background: rgba(255,255,255,.88);
+  border-color: rgba(255,255,255,.95);
+  box-shadow: 0 8px 25px rgba(10,30,55,.12);
+  backdrop-filter: blur(18px);
+}
+.recommended-heading { margin-bottom: 10px; color: #526982; font-size: 11px; font-weight: 700; }
+.recommended-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }
+.recommended-chips button { padding: 7px 11px; border: 1px solid #dce7f5; border-radius: 20px; background: #fff; color: #55718f; font-size: 11px; cursor: pointer; transition: .2s; }
+.recommended-chips button:hover { border-color: #8bb3e9; background: #edf5ff; color: #275eaa; }
+.google-home-hero .scroll-cue { bottom: 19px; }
+.feature-section { min-height: 100svh; padding: 105px 24px 90px; scroll-snap-align: start; }
+.feature-section-inner { width: min(1080px,100%); margin: 0 auto; }
+.feature-section-heading { margin-bottom: 35px; text-align: center; color: #fff; text-shadow: 0 2px 10px rgba(3,15,32,.7); }
+.feature-section-heading .eyebrow,.about-card .eyebrow { font-size: 10px; letter-spacing: .22em; font-weight: 700; }
+.feature-section-heading h2 { margin: 9px 0 10px; font-size: clamp(25px,3vw,34px); }
+.feature-section-heading p:last-child { font-size: 13px; }
+.feature-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
+.feature-card {
+  position: relative;
+  min-height: 245px;
+  padding: 24px 22px 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.85);
+  border-radius: 21px;
+  background: rgba(255,255,255,.90);
+  box-shadow: 0 12px 35px rgba(8,24,48,.15);
+  backdrop-filter: blur(22px);
+  cursor: pointer;
+  transition: transform .28s ease,box-shadow .28s ease,border-color .28s ease;
+}
+.feature-card:hover,.feature-card:focus-within,.feature-card.is-open { transform: translateY(-5px); box-shadow: 0 19px 42px rgba(8,24,48,.23); border-color: #fff; }
+.feature-card-icon { width: 45px; height: 45px; display: grid; place-items: center; margin-bottom: 16px; border-radius: 14px; }
+.feature-card-icon .material-symbols-rounded { font-size: 25px; }
+.search-feature { color: #3977d5; background: #e8f1ff; }
+.mail-feature { color: #c17a45; background: #fff0e4; }
+.drive-feature { color: #3d9467; background: #e7f6ed; }
+.photos-feature { color: #8760bd; background: #f1eaff; }
+.account-feature { color: #4e79b5; background: #e9f1fc; }
+.assistant-feature { color: #6e67c4; background: #eeedff; }
+.feature-card h3 { margin-bottom: 8px; color: #344b68; font-size: 17px; }
+.feature-summary { color: #7a899d; font-size: 12px; line-height: 1.7; }
+.feature-hint { position: absolute; right: 17px; bottom: 14px; color: #9aa8b8; font-size: 10px; }
+.feature-details {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px 22px;
+  color: #52667f;
+  background: rgba(255,255,255,.97);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity .25s ease,transform .25s ease;
+}
+.feature-card:hover .feature-details,.feature-card:focus-within .feature-details,.feature-card.is-open .feature-details { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.feature-details p { font-size: 12px; line-height: 1.85; }
+.feature-details button { align-self: flex-start; display: inline-flex; align-items: center; gap: 5px; margin-top: 18px; padding: 9px 13px; border: 0; border-radius: 9px; color: #fff; background: var(--blue); font-size: 11px; cursor: pointer; }
+.feature-details button:hover { background: var(--blue-dark); }
+.feature-details button .material-symbols-rounded { font-size: 16px; }
+.about-section { min-height: 72vh; padding: 90px 22px; display: grid; place-items: center; scroll-snap-align: start; }
+.about-card { width: min(760px,100%); padding: 48px 42px; border: 1px solid rgba(255,255,255,.95); border-radius: 25px; background: rgba(255,255,255,.91); box-shadow: 0 15px 45px rgba(8,24,48,.16); text-align: center; backdrop-filter: blur(24px); }
+.about-card .eyebrow { color: #7690ad; }
+.about-card h2 { margin: 12px 0; color: #344b68; font-size: clamp(22px,3vw,31px); }
+.about-card p:not(.eyebrow) { max-width: 590px; margin: 0 auto; color: #75849a; font-size: 13px; line-height: 1.9; }
+.about-settings-button { display: inline-flex; align-items: center; gap: 7px; margin-top: 22px; padding: 10px 16px; border: 1px solid #dce7f5; border-radius: 10px; background: #fff; color: #426b9d; cursor: pointer; }
+.about-settings-button:hover { background: #edf5ff; }
+
+/* Settings app */
+.settings-layout { display: grid; grid-template-columns: 190px minmax(0,1fr); gap: 20px; max-width: 1000px; margin: 0 auto; }
+.settings-tabs { display: flex; flex-direction: column; gap: 7px; }
+.settings-tab { display: flex; align-items: center; gap: 10px; padding: 12px 13px; border: 0; border-radius: 11px; background: transparent; color: #62758e; text-align: left; font-size: 12px; cursor: pointer; }
+.settings-tab.active,.settings-tab:hover { color: #2867bd; background: #e8f1ff; }
+.settings-tab .material-symbols-rounded { font-size: 20px; }
+.settings-section { padding: 24px; border: 1px solid #e8eef6; border-radius: 17px; background: rgba(255,255,255,.94); }
+.settings-section h3 { margin-bottom: 7px; color: #344c6d; font-size: 17px; }
+.settings-section > p { margin-bottom: 21px; color: #8190a5; font-size: 12px; line-height: 1.7; }
+.setting-row { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 17px 0; border-top: 1px solid #edf1f6; }
+.setting-row:first-of-type { border-top: 0; }
+.setting-copy { min-width: 0; }
+.setting-copy strong { display: block; color: #435a77; font-size: 13px; }
+.setting-copy small { display: block; margin-top: 5px; color: #91a0b4; font-size: 11px; line-height: 1.6; }
+.setting-control { width: min(260px,48%); flex-shrink: 0; }
+.setting-control select { width: 100%; padding: 10px 12px; border: 1px solid #dce5f0; border-radius: 10px; background: #fff; color: #43566f; font: inherit; font-size: 12px; }
+.setting-control input[type="range"] { width: 100%; accent-color: var(--blue); }
+.setting-toggle { width: 46px; height: 26px; flex-shrink: 0; appearance: none; border: 0; border-radius: 20px; background: #c9d2df; cursor: pointer; position: relative; transition: .2s; }
+.setting-toggle::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: white; box-shadow: 0 1px 4px rgba(0,0,0,.2); transition: .2s; }
+.setting-toggle:checked { background: #4b8bdc; }
+.setting-toggle:checked::after { left: 23px; }
+.settings-danger { margin-top: 18px; padding: 12px 15px; border: 1px solid #f0d9d9; border-radius: 10px; color: #a85555; background: #fff8f8; cursor: pointer; font-size: 12px; }
+body.home-compact .google-home-hero { min-height: 82svh; }
+body.home-compact .home-brand-banner { max-height: 115px; width: min(300px,68vw); }
+body.density-compact .work-content { padding: 16px; }
+body.density-compact .app-card { padding: 15px; }
+body.no-animations *,body.no-animations *::before,body.no-animations *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+@media(max-width:760px) {
+  .feature-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+  .feature-card { min-height: 230px; padding: 19px 16px; }
+  .settings-layout { grid-template-columns: 1fr; gap: 10px; }
+  .settings-tabs { flex-direction: row; flex-wrap: wrap; }
+  .settings-tab { flex: 1; justify-content: center; padding: 10px 8px; }
+}
+@media(max-width:500px) {
+  .google-home-hero { padding-top: 95px; }
+  .home-brand-banner { width: min(300px,78vw); max-height: 120px; }
+  .google-search-bar { height: 54px; margin-top: 27px; }
+  .home-action-button { min-width: 140px; padding: 10px 13px; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .feature-card { min-height: 210px; }
+  .setting-row { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .setting-control { width: 100%; }
+  .about-card { padding: 34px 22px; }
+}
+
 </style>
 </head>
 <body>
@@ -682,6 +903,7 @@ header {
       <button class="popup-item" onclick="openApp('mail')"><span class="material-symbols-rounded">mail</span>メール</button>
       <button class="popup-item" onclick="openApp('drive')"><span class="material-symbols-rounded">cloud</span>ドライブ</button>
       <button class="popup-item" onclick="openApp('photos')"><span class="material-symbols-rounded">photo_library</span>写真</button>
+      <button class="popup-item" onclick="openApp('settings')"><span class="material-symbols-rounded">settings</span>設定</button>
     </div>
     <div class="header-popup account-popup" id="accountPopup">
       <div>
@@ -726,49 +948,98 @@ header {
 
 <!-- Home -->
 <div id="homePage">
-  <!-- Hero 1: logo left, message right (reference image 1) -->
-  <section class="hero-panel hero-panel-one scroll-section" id="heroIntro" aria-label="10^100 トップ">
-    <div class="hero-layout">
-      <div class="hero-brand scroll-reveal">
-        <img src="10100_Banner.png" class="hero-banner" alt="10^100" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <div class="hero-logo-fallback" style="display:none">10<sup>100</sup></div>
+  <!-- Top: Google-style search portal -->
+  <section class="google-home-hero scroll-section" id="heroIntro" aria-label="10^100 トップ">
+    <div class="google-home-inner">
+      <div class="home-brand-wrap scroll-reveal">
+        <img src="10100_Banner.png" class="home-brand-banner" alt="10^100" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div class="home-brand-fallback" style="display:none">10<sup>100</sup></div>
       </div>
-      <div class="hero-copy hero-copy-right scroll-reveal">
-        <h1>想像を超える、その先へ。</h1>
-        <p>あなたの情報とアプリケーションを、10<sup>100</sup>の共通アカウントでまとめて管理します。</p>
+      <p class="home-tagline scroll-reveal">想像を超える、その先へ。</p>
+      <form class="google-search-bar scroll-reveal" onsubmit="submitHeroSearch(event)">
+        <span class="material-symbols-rounded search-leading-icon">search</span>
+        <input id="homeSearchInput" type="search" placeholder="10^100 で検索..." autocomplete="off" aria-label="検索キーワード">
+        <button type="submit" aria-label="検索"><span class="material-symbols-rounded">arrow_forward</span></button>
+      </form>
+      <div class="home-search-actions scroll-reveal">
+        <button class="home-action-button" onclick="submitHeroSearch()">10<sup>100</sup>検索</button>
+        <button class="home-action-button" onclick="toggleRecommendedSearches(event)" aria-expanded="false" id="recommendedToggle">おすすめの検索</button>
       </div>
-    </div>
-    <div class="scroll-cue" aria-hidden="true">
-      <span>SCROLL</span>
-      <span class="material-symbols-rounded">keyboard_arrow_down</span>
-    </div>
-  </section>
-
-  <!-- Hero 2: welcome copy left, logo right (reference image 2) -->
-  <section class="hero-panel hero-panel-two scroll-section" id="heroWelcome" aria-label="10^100 へようこそ">
-    <div class="hero-action-row scroll-reveal">
-      <button class="hero-action-button" onclick="openHomeSearch(false)">10<sup>100</sup>検索</button>
-      <button class="hero-action-button" onclick="openHomeSearch(true)">おすすめのページへ</button>
-    </div>
-    <div class="hero-layout hero-layout-welcome">
-      <div class="hero-copy hero-copy-left scroll-reveal">
-        <h2>10<sup>100</sup>へようこそ。</h2>
-        <p class="welcome-lead">検索、メール、ファイル管理、写真。</p>
-        <p>日々のデジタル体験をひとつの場所に。</p>
-        <div class="welcome-links">
-          <button onclick="openApp('search')"><span class="material-symbols-rounded">search</span>検索</button>
-          <button onclick="openApp('mail')"><span class="material-symbols-rounded">mail</span>メール</button>
-          <button onclick="openApp('drive')"><span class="material-symbols-rounded">cloud</span>ドライブ</button>
-          <button onclick="openApp('photos')"><span class="material-symbols-rounded">photo_library</span>写真</button>
+      <div class="recommended-searches scroll-reveal" id="recommendedSearches">
+        <p class="recommended-heading">おすすめの検索</p>
+        <div class="recommended-chips">
+          <button onclick="runGoogleSearch('宇宙の大きさ')">宇宙の大きさ</button>
+          <button onclick="runGoogleSearch('人工知能の最新動向')">人工知能の最新動向</button>
+          <button onclick="runGoogleSearch('世界の絶景')">世界の絶景</button>
+          <button onclick="runGoogleSearch('機械工学の基礎')">機械工学の基礎</button>
         </div>
       </div>
-      <div class="hero-brand hero-brand-right scroll-reveal">
-        <img src="10100_Banner.png" class="hero-banner hero-banner-large" alt="10^100" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <div class="hero-logo-fallback" style="display:none">10<sup>100</sup></div>
-      </div>
+      <div class="scroll-cue" aria-hidden="true"><span>SCROLL</span><span class="material-symbols-rounded">keyboard_arrow_down</span></div>
     </div>
   </section>
 
+  <!-- Second area onward: hover reveals detailed descriptions -->
+  <section class="feature-section scroll-section" id="servicesSection">
+    <div class="feature-section-inner">
+      <div class="feature-section-heading scroll-reveal">
+        <p class="eyebrow">10^100 SERVICES</p>
+        <h2>10<sup>100</sup>のサービス</h2>
+        <p>カードにマウスを重ねると、各サービスの詳しい説明が表示されます。</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card scroll-reveal" tabindex="0" onclick="toggleFeatureCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFeatureCard(this)}">
+          <div class="feature-card-icon search-feature"><span class="material-symbols-rounded">search</span></div>
+          <h3>10<sup>100</sup>検索</h3>
+          <p class="feature-summary">必要な情報を、すばやく見つける。</p>
+          <div class="feature-details"><p>Google検索と連携して、ウェブ上の情報を調べられます。検索履歴は共通アカウントごとにブラウザ内へ保存され、あとから再検索できます。</p><button onclick="event.stopPropagation();openApp('search')">検索を開く <span class="material-symbols-rounded">arrow_forward</span></button></div>
+          <span class="feature-hint">ホバーして詳細を見る</span>
+        </article>
+        <article class="feature-card scroll-reveal" tabindex="0" onclick="toggleFeatureCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFeatureCard(this)}">
+          <div class="feature-card-icon mail-feature"><span class="material-symbols-rounded">mail</span></div>
+          <h3>10<sup>100</sup>メール</h3>
+          <p class="feature-summary">メッセージと下書きをまとめて管理。</p>
+          <div class="feature-details"><p>受信トレイ、スター付き、送信済み、下書きを整理できます。メール作成と下書き保存に対応し、実際の送受信はメールサーバー接続後に利用できます。</p><button onclick="event.stopPropagation();openApp('mail')">メールを開く <span class="material-symbols-rounded">arrow_forward</span></button></div>
+          <span class="feature-hint">ホバーして詳細を見る</span>
+        </article>
+        <article class="feature-card scroll-reveal" tabindex="0" onclick="toggleFeatureCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFeatureCard(this)}">
+          <div class="feature-card-icon drive-feature"><span class="material-symbols-rounded">cloud</span></div>
+          <h3>10<sup>100</sup>ドライブ</h3>
+          <p class="feature-summary">ファイルをひとつの場所に保存。</p>
+          <div class="feature-details"><p>ファイルのアップロード、ドラッグ＆ドロップ、一覧表示、ダウンロード、削除ができます。データは現在のブラウザ内に保存されます。</p><button onclick="event.stopPropagation();openApp('drive')">ドライブを開く <span class="material-symbols-rounded">arrow_forward</span></button></div>
+          <span class="feature-hint">ホバーして詳細を見る</span>
+        </article>
+        <article class="feature-card scroll-reveal" tabindex="0" onclick="toggleFeatureCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFeatureCard(this)}">
+          <div class="feature-card-icon photos-feature"><span class="material-symbols-rounded">photo_library</span></div>
+          <h3>10<sup>100</sup>写真</h3>
+          <p class="feature-summary">思い出の画像を見やすく整理。</p>
+          <div class="feature-details"><p>画像をアップロードしてライブラリに整理できます。サムネイル表示、拡大プレビュー、削除に対応し、画像データはブラウザ内に保存されます。</p><button onclick="event.stopPropagation();openApp('photos')">写真を開く <span class="material-symbols-rounded">arrow_forward</span></button></div>
+          <span class="feature-hint">ホバーして詳細を見る</span>
+        </article>
+        <article class="feature-card scroll-reveal" tabindex="0" onclick="toggleFeatureCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFeatureCard(this)}">
+          <div class="feature-card-icon account-feature"><span class="material-symbols-rounded">account_circle</span></div>
+          <h3>共通アカウント</h3>
+          <p class="feature-summary">アプリごとの情報を同じIDで管理。</p>
+          <div class="feature-details"><p>検索履歴やアプリデータを共通アカウントIDに紐付けます。現状はこのブラウザ内のローカルアカウントで、端末間同期にはサーバーが必要です。</p><button onclick="event.stopPropagation();openAccountManager()">アカウントを管理 <span class="material-symbols-rounded">arrow_forward</span></button></div>
+          <span class="feature-hint">ホバーして詳細を見る</span>
+        </article>
+        <article class="feature-card scroll-reveal" tabindex="0" onclick="toggleFeatureCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFeatureCard(this)}">
+          <div class="feature-card-icon assistant-feature"><span class="material-symbols-rounded">auto_awesome</span></div>
+          <h3>ユーゲン・ヨーソ</h3>
+          <p class="feature-summary">10<sup>100</sup>の使い方を案内するアシスタント。</p>
+          <div class="feature-details"><p>検索・メール・ドライブ・写真の使い方を案内する疑似AIです。現在はローカルのキーワード応答で動作し、外部AIサービスには接続していません。</p><button onclick="event.stopPropagation();document.getElementById('assistantPanel').classList.add('open')">アシスタントを開く <span class="material-symbols-rounded">arrow_forward</span></button></div>
+          <span class="feature-hint">ホバーして詳細を見る</span>
+        </article>
+      </div>
+    </div>
+  </section>
+  <section class="about-section scroll-section" id="aboutSection">
+    <div class="about-card scroll-reveal">
+      <p class="eyebrow">ONE ACCOUNT, MANY POSSIBILITIES</p>
+      <h2>日々のデジタル体験を、ひとつの場所に。</h2>
+      <p>10<sup>100</sup>は、検索・メール・ファイル・写真をひとつの入口から使えるデジタルポータルです。右上のアプリ一覧から各サービスと設定を開けます。</p>
+      <button class="about-settings-button" onclick="openApp('settings')"><span class="material-symbols-rounded">settings</span>設定を開く</button>
+    </div>
+  </section>
   <footer>© 2026 10^100 Project</footer>
 </div>
 
@@ -799,6 +1070,7 @@ header {
     <button class="app-nav" data-navapp="mail" onclick="openApp('mail')"><span class="material-symbols-rounded">mail</span><span>メール</span></button>
     <button class="app-nav" data-navapp="drive" onclick="openApp('drive')"><span class="material-symbols-rounded">cloud</span><span>ドライブ</span></button>
     <button class="app-nav" data-navapp="photos" onclick="openApp('photos')"><span class="material-symbols-rounded">photo_library</span><span>写真</span></button>
+    <button class="app-nav" data-navapp="settings" onclick="openApp('settings')"><span class="material-symbols-rounded">settings</span><span>設定</span></button>
   </aside>
   <div class="work-main">
     <div class="work-topbar">
@@ -895,11 +1167,11 @@ function activateAccount(account) {
   showToast(`「${account.displayName}」で利用中です`);
 }
 function updateAccountUI() {
-  const name = currentUser ? currentUser.displayName : "10^100 アカウント";
-  const email = currentUser ? currentUser.email : "アカウント未選択";
+  const name = currentUser ? currentUser.displayName : translateKey("10^100 アカウント");
+  const email = currentUser ? currentUser.email : translateKey("アカウント未選択");
   document.getElementById("headerAccountName").textContent = name;
   document.getElementById("headerAccountEmail").textContent = email;
-  document.getElementById("appAccountContext").textContent = currentUser ? `利用中：${name}` : "";
+  document.getElementById("appAccountContext").textContent = currentUser ? `${translateKey("利用中：")}${name}` : "";
 }
 function createLocalAccount(displayName, email) {
   const accounts = getAccounts();
@@ -1036,6 +1308,7 @@ function restoreAccount() {
 ===================================================== */
 function haptic(duration = 18) {
   try {
+    if (typeof getSettings === "function" && !getSettings().haptics) return;
     if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
       navigator.vibrate(duration);
     }
@@ -1106,7 +1379,7 @@ const backgroundLayers = [
 let activeBackgroundLayer = 0;
 let currentBackgroundIndex = -1;
 let backgroundRotationTimer = null;
-const BACKGROUND_INTERVAL_MS = 30000;
+const BACKGROUND_INTERVAL_MS = 30000; // default; user setting may override
 
 function randomBackgroundIndexes() {
   const indexes = BACKGROUND_POOL.map((_, index) => index)
@@ -1129,7 +1402,9 @@ function applyBackgroundAt(index, remainingIndexes, initial = false) {
     activeBackgroundLayer = nextLayer;
     currentBackgroundIndex = index;
     if (initial && !backgroundRotationTimer) {
-      backgroundRotationTimer = window.setInterval(rotateBackground, BACKGROUND_INTERVAL_MS);
+      const interval = (typeof getSettings === "function" ? getSettings().backgroundInterval : 30) * 1000;
+      const enabled = typeof getSettings === "function" ? getSettings().backgroundRotation : true;
+      if (enabled) backgroundRotationTimer = window.setInterval(rotateBackground, interval);
     }
   };
   probe.onerror = () => {
@@ -1138,7 +1413,9 @@ function applyBackgroundAt(index, remainingIndexes, initial = false) {
     } else {
       document.body.classList.add("background-fallback");
       if (initial && !backgroundRotationTimer) {
-        backgroundRotationTimer = window.setInterval(rotateBackground, BACKGROUND_INTERVAL_MS);
+        const interval = (typeof getSettings === "function" ? getSettings().backgroundInterval : 30) * 1000;
+        const enabled = typeof getSettings === "function" ? getSettings().backgroundRotation : true;
+        if (enabled) backgroundRotationTimer = window.setInterval(rotateBackground, interval);
       }
     }
   };
@@ -1159,7 +1436,7 @@ applyBackgroundAt(0, BACKGROUND_POOL.slice(1).map((_, index) => index + 1), true
 ===================================================== */
 function openApp(app) {
   haptic(); closeHeaderPopups(); closeAssistant();
-  if (app !== "home" && !currentUser) {
+  if (app !== "home" && app !== "settings" && !currentUser) {
     currentApp = app;
     showAccountModal("create");
     showToast("先に10^100アカウントを作成してください");
@@ -1174,14 +1451,15 @@ function openApp(app) {
   }
   homePage.style.display = "none";
   workspace.classList.add("active");
-  const titles = { search: "10^100 検索", mail: "10^100 メール", drive: "10^100 ドライブ", photos: "10^100 写真" };
+  const titles = { search: "10^100 検索", mail: "10^100 メール", drive: "10^100 ドライブ", photos: "10^100 写真", settings: "10^100 設定" };
   document.getElementById("appTitle").textContent = titles[app] || "10^100";
-  document.getElementById("appAccountContext").textContent = `利用中：${currentUser.displayName}`;
+  document.getElementById("appAccountContext").textContent = currentUser ? `利用中：${currentUser.displayName}` : "";
   document.querySelectorAll("[data-navapp]").forEach(button => button.classList.toggle("active", button.dataset.navapp === app));
   if (app === "search") renderSearchApp();
   if (app === "mail") renderMailApp("inbox");
   if (app === "drive") renderDriveApp();
   if (app === "photos") renderPhotosApp();
+  if (app === "settings") renderSettingsApp(activeSettingsTab);
 }
 
 /* =====================================================
@@ -1198,6 +1476,21 @@ function openHomeSearch(lucky = false) {
 function closeHomeSearch() {
   document.getElementById("homeSearchModal").classList.remove("active");
 }
+function submitHeroSearch(event) {
+  if (event) event.preventDefault();
+  const input = document.getElementById("homeSearchInput");
+  const query = input ? input.value.trim() : "";
+  if (query) runGoogleSearch(query);
+  else openHomeSearch(false);
+}
+function toggleRecommendedSearches(event) {
+  if (event) event.stopPropagation();
+  haptic();
+  const panel = document.getElementById("recommendedSearches");
+  const button = document.getElementById("recommendedToggle");
+  const open = panel.classList.toggle("open");
+  button.setAttribute("aria-expanded", String(open));
+}
 function submitHomeSearch(event) {
   event.preventDefault();
   const query = document.getElementById("homeQuery").value.trim();
@@ -1211,6 +1504,8 @@ function submitHomeSearch(event) {
 ===================================================== */
 function getSearchHistory() { return getUserData("search-history", []); }
 function saveSearchHistory(query) {
+  // Search remains usable on the public home page even before an account is created.
+  if (!currentUser) return;
   const history = [query, ...getSearchHistory().filter(item => item !== query)].slice(0, 12);
   setUserData("search-history", history);
 }
@@ -1580,6 +1875,445 @@ document.addEventListener("click", event => {
 });
 
 /* =====================================================
+   Settings: language, layout, and system preferences
+===================================================== */
+const SETTINGS_KEY = "10100:global:settings";
+let activeSettingsTab = "language";
+const DEFAULT_SETTINGS = {
+  language: "ja",
+  homeLayout: "standard",
+  density: "comfortable",
+  backgroundBlur: 18,
+  backgroundOpacity: 81,
+  backgroundRotation: true,
+  backgroundInterval: 30,
+  animations: true,
+  haptics: true
+};
+function getSettings() {
+  try { return { ...DEFAULT_SETTINGS, ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}") }; }
+  catch { return { ...DEFAULT_SETTINGS }; }
+}
+function saveSettings(patch) {
+  const next = { ...getSettings(), ...patch };
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
+  applySettings();
+  return next;
+}
+function applySettings() {
+  const settings = getSettings();
+  document.documentElement.lang = settings.language === "zh-HK" ? "zh-Hant-HK" : settings.language;
+  document.documentElement.style.setProperty("--background-blur", `${settings.backgroundBlur}px`);
+  document.documentElement.style.setProperty("--background-opacity", String(settings.backgroundOpacity / 100));
+  document.body.classList.toggle("home-compact", settings.homeLayout === "compact");
+  document.body.classList.toggle("density-compact", settings.density === "compact");
+  document.body.classList.toggle("no-animations", !settings.animations);
+  restartBackgroundRotation();
+}
+function updateLanguage(language) {
+  if (!["ja", "ru", "en", "zh-HK"].includes(language)) return;
+  saveSettings({ language });
+  translatePage();
+  renderSettingsApp("language");
+  showToast(translateKey("言語設定を更新しました"));
+}
+function updateSetting(key, value) {
+  const allowed = ["homeLayout", "density", "backgroundBlur", "backgroundOpacity", "backgroundRotation", "backgroundInterval", "animations", "haptics"];
+  if (!allowed.includes(key)) return;
+  const normalized = ["backgroundBlur", "backgroundOpacity", "backgroundInterval"].includes(key) ? Number(value) : value;
+  saveSettings({ [key]: normalized });
+  if (key === "backgroundBlur" || key === "backgroundOpacity") {
+    const valueLabel = document.querySelector(`[data-setting-value="${key}"]`);
+    if (valueLabel) valueLabel.textContent = key === "backgroundBlur" ? `${normalized}px` : `${normalized}%`;
+  }
+  if (key === "backgroundRotation" || key === "backgroundInterval") restartBackgroundRotation();
+  haptic(10);
+}
+function resetSettings() {
+  if (!confirm(translateKey("表示設定とシステム設定を初期状態に戻しますか？"))) return;
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(DEFAULT_SETTINGS));
+  applySettings();
+  renderSettingsApp(activeSettingsTab);
+  translatePage();
+  showToast(translateKey("設定を初期化しました"));
+}
+function renderSettingsApp(tab = "language") {
+  activeSettingsTab = tab;
+  const s = getSettings();
+  const tabs = [
+    ["language", "language", "言語設定"],
+    ["layout", "dashboard", "レイアウト設定"],
+    ["system", "tune", "システム設定"]
+  ];
+  let panel = "";
+  if (tab === "language") {
+    panel = `
+      <div class="settings-section">
+        <h3>言語設定</h3>
+        <p>10^100のインターフェースで使用する言語を選択します。選択するとすぐに反映されます。</p>
+        <div class="setting-row">
+          <div class="setting-copy"><strong>表示言語</strong><small>対応言語：日本語、ロシア語、英語、広東語（香港・繁體中文）</small></div>
+          <div class="setting-control"><select id="languageSelect" onchange="updateLanguage(this.value)">
+            <option value="ja" ${s.language === "ja" ? "selected" : ""}>日本語</option>
+            <option value="ru" ${s.language === "ru" ? "selected" : ""}>Русский</option>
+            <option value="en" ${s.language === "en" ? "selected" : ""}>English</option>
+            <option value="zh-HK" ${s.language === "zh-HK" ? "selected" : ""}>廣東話（繁體中文）</option>
+          </select></div>
+        </div>
+      </div>`;
+  } else if (tab === "layout") {
+    panel = `
+      <div class="settings-section">
+        <h3>レイアウト設定</h3>
+        <p>ホーム画面とアプリ画面の表示密度を調整します。</p>
+        <div class="setting-row"><div class="setting-copy"><strong>ホーム画面</strong><small>トップ区域の縦方向の余白を調整します。</small></div><div class="setting-control"><select onchange="updateSetting('homeLayout',this.value)"><option value="standard" ${s.homeLayout === "standard" ? "selected" : ""}>標準</option><option value="compact" ${s.homeLayout === "compact" ? "selected" : ""}>コンパクト</option></select></div></div>
+        <div class="setting-row"><div class="setting-copy"><strong>アプリの表示密度</strong><small>アプリ画面内の余白とパネルサイズを調整します。</small></div><div class="setting-control"><select onchange="updateSetting('density',this.value)"><option value="comfortable" ${s.density === "comfortable" ? "selected" : ""}>ゆったり</option><option value="compact" ${s.density === "compact" ? "selected" : ""}>高密度</option></select></div></div>
+        <div class="setting-row"><div class="setting-copy"><strong>背景のぼかし</strong><small><span data-setting-value="backgroundBlur">${s.backgroundBlur}px</span></small></div><div class="setting-control"><input type="range" min="0" max="32" step="1" value="${s.backgroundBlur}" oninput="updateSetting('backgroundBlur',this.value)"></div></div>
+        <div class="setting-row"><div class="setting-copy"><strong>背景画像の不透明度</strong><small><span data-setting-value="backgroundOpacity">${s.backgroundOpacity}%</span></small></div><div class="setting-control"><input type="range" min="35" max="95" step="1" value="${s.backgroundOpacity}" oninput="updateSetting('backgroundOpacity',this.value)"></div></div>
+      </div>`;
+  } else {
+    panel = `
+      <div class="settings-section">
+        <h3>システム設定</h3>
+        <p>アニメーション、ハプティクス、背景画像の動作を調整します。</p>
+        <div class="setting-row"><div class="setting-copy"><strong>スクロールアニメーション</strong><small>区域のフェード、スライド、スクロール演出を有効にします。</small></div><input class="setting-toggle" type="checkbox" ${s.animations ? "checked" : ""} onchange="updateSetting('animations',this.checked)"></div>
+        <div class="setting-row"><div class="setting-copy"><strong>ハプティクス</strong><small>対応端末でボタン操作や区域切替時に振動します。</small></div><input class="setting-toggle" type="checkbox" ${s.haptics ? "checked" : ""} onchange="updateSetting('haptics',this.checked)"></div>
+        <div class="setting-row"><div class="setting-copy"><strong>背景画像の自動切替</strong><small>複数の背景画像をランダムに切り替えます。</small></div><input class="setting-toggle" type="checkbox" ${s.backgroundRotation ? "checked" : ""} onchange="updateSetting('backgroundRotation',this.checked)"></div>
+        <div class="setting-row"><div class="setting-copy"><strong>背景の切替間隔</strong><small>背景画像を切り替えるまでの時間です。</small></div><div class="setting-control"><select onchange="updateSetting('backgroundInterval',this.value)"><option value="15" ${s.backgroundInterval === 15 ? "selected" : ""}>15秒</option><option value="30" ${s.backgroundInterval === 30 ? "selected" : ""}>30秒</option><option value="60" ${s.backgroundInterval === 60 ? "selected" : ""}>60秒</option><option value="120" ${s.backgroundInterval === 120 ? "selected" : ""}>120秒</option></select></div></div>
+        <button class="settings-danger" onclick="resetSettings()">表示設定とシステム設定を初期化</button>
+      </div>`;
+  }
+  appContent.innerHTML = `
+    <div class="app-heading"><h2>10^100 設定</h2><p>10^100の表示、言語、システム動作をカスタマイズします。</p></div>
+    <div class="settings-layout">
+      <nav class="settings-tabs">${tabs.map(([id,icon,label]) => `<button class="settings-tab ${tab === id ? "active" : ""}" onclick="renderSettingsApp('${id}')"><span class="material-symbols-rounded">${icon}</span>${label}</button>`).join("")}</nav>
+      ${panel}
+    </div>`;
+  translatePage();
+}
+
+/* Lightweight UI localization for Japanese, Russian, English, and Cantonese (Hong Kong). */
+const I18N = {
+  "アプリ一覧": {en:"Apps",ru:"Приложения", "zh-HK":"應用程式"},
+  "設定": {en:"Settings",ru:"Настройки", "zh-HK":"設定"},
+  "検索": {en:"Search",ru:"Поиск", "zh-HK":"搜尋"},
+  "メール": {en:"Mail",ru:"Почта", "zh-HK":"郵件"},
+  "ドライブ": {en:"Drive",ru:"Диск", "zh-HK":"雲端硬碟"},
+  "写真": {en:"Photos",ru:"Фото", "zh-HK":"相片"},
+  "ホーム": {en:"Home",ru:"Главная", "zh-HK":"首頁"},
+  "ユーゲン・ヨーソ": {en:"Yugen Yoso",ru:"Югэн Ёсо", "zh-HK":"Yugen Yoso"},
+  "10^100検索": {en:"10^100 Search",ru:"Поиск 10^100", "zh-HK":"10^100 搜尋"},
+  "おすすめの検索": {en:"Recommended searches",ru:"Рекомендуемый поиск", "zh-HK":"推薦搜尋"},
+  "おすすめのページへ": {en:"I'm Feeling Lucky",ru:"Мне повезёт", "zh-HK":"手氣不錯"},
+  "想像を超える、その先へ。": {en:"Beyond imagination. Go further.",ru:"За пределами воображения. Дальше.", "zh-HK":"超越想像，邁向更遠。"},
+  "無限の可能性を検索する": {en:"Search infinite possibilities",ru:"Ищите безграничные возможности", "zh-HK":"搜尋無限可能"},
+  "10^100のサービス": {en:"10^100 Services",ru:"Сервисы 10^100", "zh-HK":"10^100 服務"},
+  "カードにマウスを重ねると、各サービスの詳しい説明が表示されます。": {en:"Hover over a card to read more about each service.",ru:"Наведите курсор на карточку, чтобы узнать подробности.", "zh-HK":"將滑鼠移到卡片上，即可查看服務詳情。"},
+  "必要な情報を、すばやく見つける。": {en:"Find the information you need, quickly.",ru:"Быстро находите нужную информацию.", "zh-HK":"快速找到所需資訊。"},
+  "メッセージと下書きをまとめて管理。": {en:"Manage messages and drafts in one place.",ru:"Управляйте письмами и черновиками в одном месте.", "zh-HK":"集中管理郵件和草稿。"},
+  "ファイルをひとつの場所に保存。": {en:"Keep your files together in one place.",ru:"Храните файлы в одном месте.", "zh-HK":"將檔案集中儲存在同一個地方。"},
+  "思い出の画像を見やすく整理。": {en:"Organize your photos and memories.",ru:"Удобно упорядочивайте фотографии и воспоминания.", "zh-HK":"輕鬆整理相片與回憶。"},
+  "共通アカウント": {en:"Unified account",ru:"Единый аккаунт", "zh-HK":"統一帳戶"},
+  "アプリごとの情報を同じIDで管理。": {en:"Manage app data with one shared ID.",ru:"Управляйте данными приложений с одним ID.", "zh-HK":"使用同一個 ID 管理各應用程式資料。"},
+  "ユーゲン・ヨーソ": {en:"Yugen Yoso",ru:"Югэн Ёсо", "zh-HK":"Yugen Yoso"},
+  "10^100の使い方を案内するアシスタント。": {en:"Your guide to using 10^100.",ru:"Помощник по использованию 10^100.", "zh-HK":"協助你使用 10^100 的助手。"},
+  "ホバーして詳細を見る": {en:"Hover to learn more",ru:"Наведите, чтобы узнать больше", "zh-HK":"滑鼠懸停以了解詳情"},
+  "検索を開く": {en:"Open Search",ru:"Открыть поиск", "zh-HK":"開啟搜尋"},
+  "メールを開く": {en:"Open Mail",ru:"Открыть почту", "zh-HK":"開啟郵件"},
+  "ドライブを開く": {en:"Open Drive",ru:"Открыть Диск", "zh-HK":"開啟雲端硬碟"},
+  "写真を開く": {en:"Open Photos",ru:"Открыть Фото", "zh-HK":"開啟相片"},
+  "アカウントを管理": {en:"Manage account",ru:"Управление аккаунтом", "zh-HK":"管理帳戶"},
+  "アシスタントを開く": {en:"Open assistant",ru:"Открыть помощника", "zh-HK":"開啟助手"},
+  "日々のデジタル体験を、ひとつの場所に。": {en:"Your digital life, all in one place.",ru:"Ваша цифровая жизнь — в одном месте.", "zh-HK":"將日常數碼生活集中於一處。"},
+  "設定を開く": {en:"Open settings",ru:"Открыть настройки", "zh-HK":"開啟設定"},
+  "10^100 設定": {en:"10^100 Settings",ru:"Настройки 10^100", "zh-HK":"10^100 設定"},
+  "10^100の表示、言語、システム動作をカスタマイズします。": {en:"Customize the appearance, language, and system behavior of 10^100.",ru:"Настройте внешний вид, язык и работу системы 10^100.", "zh-HK":"自訂 10^100 的外觀、語言及系統操作。"},
+  "言語設定": {en:"Language",ru:"Язык", "zh-HK":"語言設定"},
+  "レイアウト設定": {en:"Layout",ru:"Макет", "zh-HK":"版面設定"},
+  "システム設定": {en:"System",ru:"Система", "zh-HK":"系統設定"},
+  "表示言語": {en:"Display language",ru:"Язык интерфейса", "zh-HK":"介面語言"},
+  "対応言語：日本語、ロシア語、英語、広東語（香港・繁體中文）": {en:"Available: Japanese, Russian, English, and Cantonese (Hong Kong Traditional Chinese).",ru:"Доступны: японский, русский, английский и кантонский (традиционный китайский, Гонконг).", "zh-HK":"支援日文、俄文、英文及廣東話（香港繁體中文）。"},
+  "言語を選択するとすぐに反映されます。": {en:"Changes take effect immediately.",ru:"Изменения применяются сразу.", "zh-HK":"選擇後會即時生效。"},
+  "ホーム画面": {en:"Home layout",ru:"Главная страница", "zh-HK":"首頁版面"},
+  "トップ区域の縦方向の余白を調整します。": {en:"Adjust the vertical spacing of the top section.",ru:"Настройте вертикальные отступы верхнего раздела.", "zh-HK":"調整頂部區域的垂直間距。"},
+  "アプリの表示密度": {en:"App density",ru:"Плотность интерфейса", "zh-HK":"應用程式顯示密度"},
+  "アプリ画面内の余白とパネルサイズを調整します。": {en:"Adjust spacing and panel sizes in apps.",ru:"Настройте интервалы и размеры панелей приложений.", "zh-HK":"調整應用程式內的間距及面板大小。"},
+  "背景のぼかし": {en:"Background blur",ru:"Размытие фона", "zh-HK":"背景模糊"},
+  "背景画像の不透明度": {en:"Background opacity",ru:"Непрозрачность фона", "zh-HK":"背景不透明度"},
+  "標準": {en:"Standard",ru:"Стандартный", "zh-HK":"標準"},
+  "コンパクト": {en:"Compact",ru:"Компактный", "zh-HK":"精簡"},
+  "ゆったり": {en:"Comfortable",ru:"Свободный", "zh-HK":"舒適"},
+  "高密度": {en:"Dense",ru:"Плотный", "zh-HK":"緊密"},
+  "アニメーション、ハプティクス、背景画像の動作を調整します。": {en:"Adjust animations, haptics, and background behavior.",ru:"Настройте анимацию, тактильную отдачу и поведение фона.", "zh-HK":"調整動畫、觸覺回饋及背景行為。"},
+  "スクロールアニメーション": {en:"Scroll animations",ru:"Анимация прокрутки", "zh-HK":"捲動動畫"},
+  "区域のフェード、スライド、スクロール演出を有効にします。": {en:"Enable section fade, slide, and scroll effects.",ru:"Включить эффекты появления, сдвига и прокрутки разделов.", "zh-HK":"啟用區域淡入、滑動及捲動效果。"},
+  "ハプティクス": {en:"Haptics",ru:"Тактильная отдача", "zh-HK":"觸覺回饋"},
+  "対応端末でボタン操作や区域切替時に振動します。": {en:"Vibrate on button actions and section changes where supported.",ru:"Вибрация при нажатиях и смене разделов на совместимых устройствах.", "zh-HK":"在支援的裝置上，按鈕操作及切換區域時會震動。"},
+  "背景画像の自動切替": {en:"Automatic background rotation",ru:"Автоматическая смена фона", "zh-HK":"自動切換背景圖片"},
+  "複数の背景画像をランダムに切り替えます。": {en:"Randomly rotate through available background images.",ru:"Случайно меняет доступные фоновые изображения.", "zh-HK":"隨機輪換可用的背景圖片。"},
+  "背景の切替間隔": {en:"Background interval",ru:"Интервал смены фона", "zh-HK":"背景切換間隔"},
+  "背景画像を切り替えるまでの時間です。": {en:"Time between background changes.",ru:"Время между сменами фонового изображения.", "zh-HK":"背景圖片切換之間的時間。"},
+  "表示設定とシステム設定を初期化": {en:"Reset appearance and system settings",ru:"Сбросить настройки внешнего вида и системы", "zh-HK":"重設外觀及系統設定"},
+  "表示設定とシステム設定を初期状態に戻しますか？": {en:"Reset appearance and system settings to defaults?",ru:"Сбросить настройки внешнего вида и системы?", "zh-HK":"確定要將外觀及系統設定還原為預設值嗎？"},
+  "設定を初期化しました": {en:"Settings have been reset",ru:"Настройки сброшены", "zh-HK":"設定已重設"},
+  "言語設定を更新しました": {en:"Language updated",ru:"Язык обновлён", "zh-HK":"語言已更新"},
+  "検索したいキーワードを入力してください。": {en:"Enter a search query.",ru:"Введите поисковый запрос.", "zh-HK":"請輸入搜尋關鍵字。"},
+  "キャンセル": {en:"Cancel",ru:"Отмена", "zh-HK":"取消"},
+  "検索する": {en:"Search",ru:"Искать", "zh-HK":"搜尋"},
+  "検索キーワード": {en:"Search query",ru:"Поисковый запрос", "zh-HK":"搜尋關鍵字"},
+  "受信トレイ": {en:"Inbox",ru:"Входящие", "zh-HK":"收件匣"},
+  "スター付き": {en:"Starred",ru:"Избранное", "zh-HK":"已加星號"},
+  "送信済み": {en:"Sent",ru:"Отправленные", "zh-HK":"已寄出"},
+  "下書き": {en:"Drafts",ru:"Черновики", "zh-HK":"草稿"},
+  "作成": {en:"Compose",ru:"Создать", "zh-HK":"撰寫"},
+  "更新": {en:"Refresh",ru:"Обновить", "zh-HK":"重新整理"},
+  "宛先": {en:"To",ru:"Кому", "zh-HK":"收件人"},
+  "件名": {en:"Subject",ru:"Тема", "zh-HK":"主旨"},
+  "本文": {en:"Message",ru:"Сообщение", "zh-HK":"內文"},
+  "下書き保存": {en:"Save draft",ru:"Сохранить черновик", "zh-HK":"儲存草稿"},
+  "デモ送信": {en:"Demo send",ru:"Тестовая отправка", "zh-HK":"模擬寄送"},
+  "マイドライブ": {en:"My Drive",ru:"Мой диск", "zh-HK":"我的雲端硬碟"},
+  "ファイルをアップロード": {en:"Upload files",ru:"Загрузить файлы", "zh-HK":"上載檔案"},
+  "写真を追加": {en:"Add photos",ru:"Добавить фото", "zh-HK":"新增相片"},
+  "写真ライブラリ": {en:"Photo library",ru:"Фототека", "zh-HK":"相片圖庫"},
+  "閉じる": {en:"Close",ru:"Закрыть", "zh-HK":"關閉"},
+  "アカウント切替": {en:"Switch account",ru:"Сменить аккаунт", "zh-HK":"切換帳戶"},
+  "プロフィール": {en:"Profile",ru:"Профиль", "zh-HK":"個人資料"},
+  "ログアウト": {en:"Sign out",ru:"Выйти", "zh-HK":"登出"},
+  "プロフィールを更新しました": {en:"Profile updated",ru:"Профиль обновлён", "zh-HK":"個人資料已更新"},
+  "表示名": {en:"Display name",ru:"Отображаемое имя", "zh-HK":"顯示名稱"},
+  "アカウントを切り替え": {en:"Switch account",ru:"Сменить аккаунт", "zh-HK":"切換帳戶"},
+  "10^100 アカウントを作成": {en:"Create a 10^100 account",ru:"Создать аккаунт 10^100", "zh-HK":"建立 10^100 帳戶"},
+  "10^100へようこそ": {en:"Welcome to 10^100",ru:"Добро пожаловать в 10^100", "zh-HK":"歡迎使用 10^100"},
+  "このブラウザ内で使うローカルアカウントを作成します。パスワードや決済情報は入力しません。": {en:"Create a local account in this browser. No password or payment information is required.",ru:"Создайте локальный аккаунт в этом браузере. Пароль и платёжные данные не требуются.", "zh-HK":"建立只在此瀏覽器使用的本機帳戶，無需輸入密碼或付款資料。"},
+  "作成して開始": {en:"Create and continue",ru:"Создать и продолжить", "zh-HK":"建立並開始"},
+  "変更を保存": {en:"Save changes",ru:"Сохранить изменения", "zh-HK":"儲存變更"},
+  "このブラウザに保存されます。": {en:"Saved in this browser.",ru:"Сохраняется в этом браузере.", "zh-HK":"資料會儲存在此瀏覽器。"}
+};
+Object.assign(I18N, {
+  "10^100 検索": {en:"10^100 Search",ru:"Поиск 10^100", "zh-HK":"10^100 搜尋"},
+  "10^100 メール": {en:"10^100 Mail",ru:"Почта 10^100", "zh-HK":"10^100 郵件"},
+  "10^100 ドライブ": {en:"10^100 Drive",ru:"Диск 10^100", "zh-HK":"10^100 雲端硬碟"},
+  "10^100 写真": {en:"10^100 Photos",ru:"Фото 10^100", "zh-HK":"10^100 相片"},
+  "10^100 設定": {en:"10^100 Settings",ru:"Настройки 10^100", "zh-HK":"10^100 設定"},
+  "検索履歴は現在の10^100アカウントに紐付けて保存されます。": {en:"Search history is saved to the current 10^100 account.",ru:"История поиска сохраняется в текущем аккаунте 10^100.", "zh-HK":"搜尋記錄會儲存至目前的 10^100 帳戶。"},
+  "検索したい内容を入力...": {en:"Enter what you want to search...",ru:"Введите запрос для поиска...", "zh-HK":"輸入要搜尋的內容⋯"},
+  "最近の検索": {en:"Recent searches",ru:"Недавние запросы", "zh-HK":"最近搜尋"},
+  "履歴を削除": {en:"Clear history",ru:"Очистить историю", "zh-HK":"清除記錄"},
+  "まだ検索履歴はありません。": {en:"No search history yet.",ru:"История поиска пока пуста.", "zh-HK":"目前沒有搜尋記錄。"},
+  "検索について": {en:"About Search",ru:"О поиске", "zh-HK":"關於搜尋"},
+  "現在はGoogle検索を利用しています。検索結果は新しいタブで開きます。": {en:"Google Search is currently used. Results open in a new tab.",ru:"Сейчас используется Google Поиск. Результаты откроются в новой вкладке.", "zh-HK":"目前使用 Google 搜尋，結果會在新分頁開啟。"},
+  "このアカウントの検索履歴を削除しました": {en:"Search history for this account was cleared",ru:"История поиска этого аккаунта очищена", "zh-HK":"已清除此帳戶的搜尋記錄"},
+  "受信トレイ": {en:"Inbox",ru:"Входящие", "zh-HK":"收件匣"},
+  "スター付き": {en:"Starred",ru:"Избранное", "zh-HK":"已加星號"},
+  "送信済み": {en:"Sent",ru:"Отправленные", "zh-HK":"已寄出"},
+  "下書き": {en:"Drafts",ru:"Черновики", "zh-HK":"草稿"},
+  "メールはありません。": {en:"No messages.",ru:"Нет писем.", "zh-HK":"沒有郵件。"},
+  "メールのデータは現在のローカルアカウントに保存されます。実際の送受信にはメールサーバーが必要です。": {en:"Mail data is stored in this local account. Actual sending and receiving requires a mail server.",ru:"Почта хранится в локальном аккаунте. Для реальной отправки и получения нужен почтовый сервер.", "zh-HK":"郵件資料會儲存在本機帳戶。實際收發郵件需要郵件伺服器。"},
+  "新しいメール": {en:"New message",ru:"Новое письмо", "zh-HK":"新郵件"},
+  "宛先": {en:"To",ru:"Кому", "zh-HK":"收件人"},
+  "件名": {en:"Subject",ru:"Тема", "zh-HK":"主旨"},
+  "本文": {en:"Message",ru:"Сообщение", "zh-HK":"內文"},
+  "件名を入力": {en:"Enter a subject",ru:"Введите тему", "zh-HK":"輸入主旨"},
+  "メッセージを入力...": {en:"Write a message...",ru:"Введите сообщение...", "zh-HK":"輸入訊息⋯"},
+  "戻る": {en:"Back",ru:"Назад", "zh-HK":"返回"},
+  "この画面では作成・下書き保存・送信済み一覧へのデモ登録ができます。実際のメール送信は行いません。": {en:"This demo lets you compose, save drafts, and add items to Sent. No real email is sent.",ru:"В демо можно создавать письма, сохранять черновики и добавлять записи в отправленные. Реальная отправка не выполняется.", "zh-HK":"此示範可撰寫郵件、儲存草稿及加入寄件備份，但不會真正寄出郵件。"},
+  "このアカウントの下書きを保存しました": {en:"Draft saved for this account",ru:"Черновик сохранён для этого аккаунта", "zh-HK":"草稿已儲存至此帳戶"},
+  "送信デモを保存しました（実際の送信は未実行）": {en:"Demo message saved (not actually sent)",ru:"Тестовое письмо сохранено (не отправлено)", "zh-HK":"示範郵件已儲存（並未真正寄出）"},
+  "下書きを編集": {en:"Edit draft",ru:"Изменить черновик", "zh-HK":"編輯草稿"},
+  "のファイルをこのブラウザ内で管理します。": {en:"'s files are managed in this browser.",ru:": файлы хранятся в этом браузере.", "zh-HK":"的檔案會在此瀏覽器內管理。"},
+  "ファイルをアップロード": {en:"Upload files",ru:"Загрузить файлы", "zh-HK":"上載檔案"},
+  "クリックまたはドラッグ＆ドロップ": {en:"Click or drag and drop",ru:"Нажмите или перетащите файлы", "zh-HK":"按一下或拖放檔案"},
+  "マイドライブ": {en:"My Drive",ru:"Мой диск", "zh-HK":"我的雲端硬碟"},
+  "ファイルはまだありません。": {en:"There are no files yet.",ru:"Файлов пока нет.", "zh-HK":"目前沒有檔案。"},
+  "上部からファイルを追加してください。": {en:"Add files using the area above.",ru:"Добавьте файлы через область выше.", "zh-HK":"請使用上方區域新增檔案。"},
+  "ファイルを読み込めませんでした。": {en:"Could not load files.",ru:"Не удалось загрузить файлы.", "zh-HK":"無法載入檔案。"},
+  "10^100 写真": {en:"10^100 Photos",ru:"Фото 10^100", "zh-HK":"10^100 相片"},
+  "写真を追加": {en:"Add photos",ru:"Добавить фото", "zh-HK":"新增相片"},
+  "写真ライブラリ": {en:"Photo library",ru:"Фототека", "zh-HK":"相片圖庫"},
+  "写真はまだありません。": {en:"There are no photos yet.",ru:"Фотографий пока нет.", "zh-HK":"目前沒有相片。"},
+  "上部から写真を追加してください。": {en:"Add photos using the area above.",ru:"Добавьте фотографии через область выше.", "zh-HK":"請使用上方區域新增相片。"},
+  "写真を読み込めませんでした。": {en:"Could not load photos.",ru:"Не удалось загрузить фотографии.", "zh-HK":"無法載入相片。"},
+  "読み込み中...": {en:"Loading...",ru:"Загрузка...", "zh-HK":"載入中⋯"},
+  "ファイルが見つかりません": {en:"File not found",ru:"Файл не найден", "zh-HK":"找不到檔案"},
+  "ファイルを保存できませんでした": {en:"Could not save the file",ru:"Не удалось сохранить файл", "zh-HK":"無法儲存檔案"},
+  "ダウンロードに失敗しました": {en:"Download failed",ru:"Не удалось скачать", "zh-HK":"下載失敗"},
+  "このファイルを削除しますか？": {en:"Delete this file?",ru:"Удалить этот файл?", "zh-HK":"確定要刪除此檔案嗎？"},
+  "削除しました": {en:"Deleted",ru:"Удалено", "zh-HK":"已刪除"},
+  "削除できませんでした": {en:"Could not delete",ru:"Не удалось удалить", "zh-HK":"無法刪除"},
+  "言語設定を更新しました": {en:"Language updated",ru:"Язык обновлён", "zh-HK":"語言已更新"},
+  "日本語": {en:"Japanese",ru:"Японский", "zh-HK":"日文"},
+  "ロシア語": {en:"Russian",ru:"Русский", "zh-HK":"俄文"},
+  "英語": {en:"English",ru:"Английский", "zh-HK":"英文"},
+  "広東語（香港・繁體中文）": {en:"Cantonese (Hong Kong Traditional Chinese)",ru:"Кантонский (традиционный китайский, Гонконг)", "zh-HK":"廣東話（香港繁體中文）"},
+  "秒": {en:"seconds",ru:"секунд", "zh-HK":"秒"},
+  "閉じる": {en:"Close",ru:"Закрыть", "zh-HK":"關閉"},
+  "アカウント未選択": {en:"No account selected",ru:"Аккаунт не выбран", "zh-HK":"尚未選擇帳戶"},
+  "利用中：": {en:"Signed in: ",ru:"Выполнен вход: ", "zh-HK":"使用中："},
+  "表示名を入力してください": {en:"Enter a display name",ru:"Введите отображаемое имя", "zh-HK":"請輸入顯示名稱"},
+  "プロフィールを更新しました": {en:"Profile updated",ru:"Профиль обновлён", "zh-HK":"個人資料已更新"},
+  "登録済みのアカウントはありません。": {en:"No registered accounts.",ru:"Нет зарегистрированных аккаунтов.", "zh-HK":"沒有已註冊的帳戶。"},
+  "先に10^100アカウントを作成してください": {en:"Create a 10^100 account first",ru:"Сначала создайте аккаунт 10^100", "zh-HK":"請先建立 10^100 帳戶"},
+  "このブラウザに保存されているローカルアカウントを選択します。": {en:"Choose a local account saved in this browser.",ru:"Выберите локальный аккаунт, сохранённый в этом браузере.", "zh-HK":"選擇儲存在此瀏覽器的本機帳戶。"},
+  "検索キーワードを入力してください": {en:"Enter a search query",ru:"Введите поисковый запрос", "zh-HK":"請輸入搜尋關鍵字"},
+  "おすすめの検索ワード": {en:"Suggested searches",ru:"Рекомендуемые запросы", "zh-HK":"推薦搜尋關鍵字"}
+});
+
+Object.assign(I18N, {
+  "10^100のインターフェースで使用する言語を選択します。選択するとすぐに反映されます。": {en:"Choose the language used throughout 10^100. Changes apply immediately.",ru:"Выберите язык интерфейса 10^100. Изменения применяются сразу.", "zh-HK":"選擇 10^100 使用的介面語言，設定會即時生效。"},
+  "トップ区域の縦方向の余白を調整します。": {en:"Adjust vertical spacing in the top section.",ru:"Настройте вертикальные отступы верхнего раздела.", "zh-HK":"調整頂部區域的垂直間距。"},
+  "アプリ画面内の余白とパネルサイズを調整します。": {en:"Adjust spacing and panel sizes in app screens.",ru:"Настройте интервалы и размеры панелей приложений.", "zh-HK":"調整應用程式畫面內的間距及面板大小。"},
+  "アニメーション、ハプティクス、背景画像の動作を調整します。": {en:"Adjust animations, haptics, and background behavior.",ru:"Настройте анимацию, тактильную отдачу и поведение фона.", "zh-HK":"調整動畫、觸覺回饋及背景圖片行為。"},
+  "区域のフェード、スライド、スクロール演出を有効にします。": {en:"Enable section fade, slide, and scroll effects.",ru:"Включите эффекты появления, сдвига и прокрутки разделов.", "zh-HK":"啟用區域淡入、滑動及捲動效果。"},
+  "対応端末でボタン操作や区域切替時に振動します。": {en:"Vibrate on button actions and section changes on supported devices.",ru:"Вибрация при нажатиях и смене разделов на совместимых устройствах.", "zh-HK":"在支援的裝置上，按鈕操作及切換區域時會震動。"},
+  "複数の背景画像をランダムに切り替えます。": {en:"Rotate randomly through available background images.",ru:"Случайно переключайте доступные фоновые изображения.", "zh-HK":"隨機輪換可用的背景圖片。"},
+  "背景画像を切り替えるまでの時間です。": {en:"Time between background changes.",ru:"Интервал между сменами фона.", "zh-HK":"背景圖片切換之間的時間。"},
+  "標準": {en:"Standard",ru:"Стандартный", "zh-HK":"標準"},
+  "コンパクト": {en:"Compact",ru:"Компактный", "zh-HK":"精簡"},
+  "ゆったり": {en:"Comfortable",ru:"Свободный", "zh-HK":"舒適"},
+  "高密度": {en:"Dense",ru:"Плотный", "zh-HK":"緊密"},
+  "クリックまたはドラッグ＆ドロップ": {en:"Click or drag and drop",ru:"Нажмите или перетащите", "zh-HK":"按一下或拖放"},
+  "想像を超える、その先へ。": {en:"Beyond imagination. Go further.",ru:"За пределами воображения. Дальше.", "zh-HK":"超越想像，邁向更遠。"},
+  "あなたの情報とアプリケーションを、10^100の共通アカウントでまとめて管理します。": {en:"Manage your information and apps together with one 10^100 account.",ru:"Управляйте информацией и приложениями с единым аккаунтом 10^100.", "zh-HK":"透過 10^100 統一帳戶，集中管理你的資訊及應用程式。"},
+  "ウェブ上の情報を検索して、必要な情報を見つけられます。": {en:"Search the web to find the information you need.",ru:"Ищите в интернете нужную информацию.", "zh-HK":"搜尋網上資訊，找到你需要的內容。"}
+});
+
+Object.assign(I18N, {
+  "10^100 で検索...": {en:"Search with 10^100...",ru:"Поиск с 10^100...", "zh-HK":"使用 10^100 搜尋⋯"},
+  "検索からファイル管理まで、ひとつの場所で。": {en:"From search to file management, all in one place.",ru:"От поиска до управления файлами — всё в одном месте.", "zh-HK":"由搜尋到檔案管理，一站式完成。"},
+  "ウェブ上の情報を調べられます。検索履歴はアカウントごとに保存されます。": {en:"Search the web. Search history is stored separately for each account.",ru:"Ищите в интернете. История поиска хранится отдельно для каждого аккаунта.", "zh-HK":"搜尋網上資訊，搜尋記錄會按帳戶分開儲存。"},
+  "Google検索と連携して、ウェブ上の情報を調べられます。検索履歴は共通アカウントごとにブラウザ内へ保存され、あとから再検索できます。": {en:"Search the web with Google. Search history is stored in this browser for each shared account, so you can search again later.",ru:"Ищите информацию в интернете с помощью Google. История хранится в этом браузере отдельно для каждого аккаунта.", "zh-HK":"透過 Google 搜尋網上資訊。搜尋記錄會按統一帳戶儲存在此瀏覽器，方便日後再次搜尋。"},
+  "受信トレイ、スター付き、送信済み、下書きを整理できます。メール作成と下書き保存に対応し、実際の送受信はメールサーバー接続後に利用できます。": {en:"Organize your inbox, starred messages, sent mail, and drafts. Compose and save drafts; real sending and receiving requires a mail server.",ru:"Управляйте входящими, избранным, отправленными и черновиками. Для реальной отправки и получения нужен почтовый сервер.", "zh-HK":"整理收件匣、已加星號郵件、寄件備份及草稿。可撰寫和儲存草稿；真正收發郵件需要連接郵件伺服器。"},
+  "ファイルのアップロード、ドラッグ＆ドロップ、一覧表示、ダウンロード、削除ができます。データは現在のブラウザ内に保存されます。": {en:"Upload files by browsing or drag and drop, view the list, download, and delete. Data is stored in this browser.",ru:"Загружайте файлы, перетаскивайте их, просматривайте список, скачивайте и удаляйте. Данные хранятся в этом браузере.", "zh-HK":"可上載或拖放檔案、查看清單、下載及刪除。資料會儲存在目前的瀏覽器。"},
+  "画像をアップロードしてライブラリに整理できます。サムネイル表示、拡大プレビュー、削除に対応し、画像データはブラウザ内に保存されます。": {en:"Upload and organize images in a library with thumbnails, previews, and delete controls. Images are stored in this browser.",ru:"Загружайте и упорядочивайте изображения: доступны миниатюры, просмотр и удаление. Изображения хранятся в этом браузере.", "zh-HK":"上載圖片至圖庫，支援縮圖、放大預覽及刪除。圖片會儲存在目前的瀏覽器。"},
+  "検索履歴やアプリデータを共通アカウントIDに紐付けます。現状はこのブラウザ内のローカルアカウントで、端末間同期にはサーバーが必要です。": {en:"Search history and app data are associated with a shared account ID. Accounts are local to this browser; cross-device sync requires a server.",ru:"История поиска и данные приложений привязаны к единому ID. Сейчас аккаунт локальный; синхронизация устройств требует сервера.", "zh-HK":"搜尋記錄及應用程式資料會連結至統一帳戶 ID。目前帳戶只儲存在此瀏覽器，跨裝置同步需要伺服器。"},
+  "検索・メール・ドライブ・写真の使い方を案内する疑似AIです。現在はローカルのキーワード応答で動作し、外部AIサービスには接続していません。": {en:"A local assistant that guides you through Search, Mail, Drive, and Photos. It currently uses keyword-based replies and is not connected to an external AI service.",ru:"Локальный помощник по поиску, почте, диску и фото. Сейчас он отвечает по ключевым словам и не подключён к внешнему ИИ.", "zh-HK":"協助你使用搜尋、郵件、雲端硬碟及相片的本機助手。目前以關鍵字回應，尚未連接外部 AI 服務。"},
+  "検索、メール、ファイル管理、写真。": {en:"Search, mail, file management, and photos.",ru:"Поиск, почта, файлы и фотографии.", "zh-HK":"搜尋、郵件、檔案管理及相片。"},
+  "日々のデジタル体験をひとつの場所に。": {en:"Your everyday digital life in one place.",ru:"Ваша повседневная цифровая жизнь — в одном месте.", "zh-HK":"將日常數碼生活集中於一處。"},
+  "あなたの情報とアプリケーションを、10の100乗の共通アカウントでまとめて管理します。": {en:"Manage your information and apps together with one 10^100 account.",ru:"Управляйте информацией и приложениями с единым аккаунтом 10^100.", "zh-HK":"透過 10^100 統一帳戶，集中管理你的資訊及應用程式。"},
+  "10^100 アカウント": {en:"10^100 Account",ru:"Аккаунт 10^100", "zh-HK":"10^100 帳戶"},
+  "アカウント設定": {en:"Account settings",ru:"Настройки аккаунта", "zh-HK":"帳戶設定"},
+  "アカウントを作成": {en:"Create account",ru:"Создать аккаунт", "zh-HK":"建立帳戶"},
+  "メールアドレス（識別用）": {en:"Email address (for identification)",ru:"Адрес электронной почты (для идентификации)", "zh-HK":"電郵地址（用作識別）"},
+  "表示名と有効なメールアドレスを入力してください": {en:"Enter a display name and a valid email address",ru:"Введите имя и действительный адрес электронной почты", "zh-HK":"請輸入顯示名稱及有效的電郵地址"},
+  "このブラウザ内で使うローカルアカウントを作成します。パスワードや決済情報は入力しません。": {en:"Create a local account in this browser. No password or payment information is required.",ru:"Создайте локальный аккаунт в этом браузере. Пароль и платёжные данные не требуются.", "zh-HK":"建立只在此瀏覽器使用的本機帳戶，無需輸入密碼或付款資料。"},
+  "こんにちは。私はユーゲン・ヨーソです。": {en:"Hello. I'm Yugen Yoso.",ru:"Здравствуйте. Я Югэн Ёсо.", "zh-HK":"你好，我是 Yugen Yoso。"},
+  "10^100の操作や各アプリについてご案内します。何をお手伝いしましょうか？": {en:"I can guide you through 10^100 and its apps. How can I help?",ru:"Я помогу разобраться с 10^100 и его приложениями. Чем могу помочь?", "zh-HK":"我可以為你介紹 10^100 及各項應用程式。有甚麼可以幫你？"},
+  "疑似AIアシスタント · ローカルモード": {en:"Prototype AI assistant · Local mode",ru:"Пробный ИИ-помощник · Локальный режим", "zh-HK":"模擬 AI 助手 · 本機模式"},
+  "メッセージを入力...": {en:"Type a message...",ru:"Введите сообщение...", "zh-HK":"輸入訊息⋯"},
+  "共通アカウントで管理": {en:"Manage with one shared account",ru:"Управление через единый аккаунт", "zh-HK":"以統一帳戶管理"},
+  "おすすめの検索": {en:"Recommended searches",ru:"Рекомендуемый поиск", "zh-HK":"推薦搜尋"}
+});
+
+Object.assign(I18N, {
+  "のサービス": {en:" Services",ru:" Сервисы", "zh-HK":" 服務"},
+  "の使い方を案内するアシスタント。": {en:" — your guide to using 10^100.",ru:" — помощник по использованию 10^100.", "zh-HK":" — 協助你使用 10^100 的助手。"},
+  "は、検索・メール・ファイル・写真をひとつの入口から使えるデジタルポータルです。右上のアプリ一覧から各サービスと設定を開けます。": {en:" is a digital portal for search, mail, files, and photos. Open services and settings from the app launcher in the upper-right corner.",ru:" — цифровой портал для поиска, почты, файлов и фотографий. Открывайте сервисы и настройки через меню приложений в правом верхнем углу.", "zh-HK":"是一個整合搜尋、郵件、檔案及相片的數碼入口。你可以從右上角的應用程式清單開啟各項服務及設定。"},
+  "の共通アカウントでまとめて管理します。": {en:" account keeps everything organized in one place.",ru:" объединяет управление данными и приложениями.", "zh-HK":"統一帳戶可集中管理所有資訊及應用程式。"},
+  "10^100 アシスタント": {en:"10^100 Assistant",ru:"Помощник 10^100", "zh-HK":"10^100 助手"},
+  "こんにちは。私はユーゲン・ヨーソです。\n\n10^100の操作や各アプリについてご案内します。何をお手伝いしましょうか？": {en:"Hello. I'm Yugen Yoso.\n\nI can guide you through 10^100 and its apps. How can I help?",ru:"Здравствуйте. Я Югэн Ёсо.\n\nЯ помогу разобраться с 10^100 и его приложениями. Чем могу помочь?", "zh-HK":"你好，我是 Yugen Yoso。\n\n我可以為你介紹 10^100 及各項應用程式。有甚麼可以幫你？"},
+  "アプリ一覧から各サービスと設定を開けます。": {en:"Open services and settings from the app launcher.",ru:"Открывайте сервисы и настройки через меню приложений.", "zh-HK":"可從應用程式清單開啟各項服務及設定。"},
+  "言語設定を更新しました": {en:"Language updated",ru:"Язык обновлён", "zh-HK":"語言已更新"},
+  "設定を開く": {en:"Open settings",ru:"Открыть настройки", "zh-HK":"開啟設定"}
+});
+
+Object.assign(I18N, {
+  "アカウントを切り替え": {en:"Switch account",ru:"Сменить аккаунт", "zh-HK":"切換帳戶"},
+  "アカウント設定": {en:"Account settings",ru:"Настройки аккаунта", "zh-HK":"帳戶設定"},
+  "作成して開始": {en:"Create and continue",ru:"Создать и продолжить", "zh-HK":"建立並開始"},
+  "メールアドレス（識別用）": {en:"Email address (for identification)",ru:"Электронная почта (для идентификации)", "zh-HK":"電郵地址（用作識別）"},
+  "例：宇宙の大きさ": {en:"e.g. Size of the universe",ru:"Например: размер Вселенной", "zh-HK":"例如：宇宙有多大"},
+  "検索履歴は現在の10^100アカウントに紐付けて保存されます。": {en:"Search history is saved to the current 10^100 account.",ru:"История поиска сохраняется в текущем аккаунте 10^100.", "zh-HK":"搜尋記錄會儲存至目前的 10^100 帳戶。"},
+  "検索したい内容を入力...": {en:"Enter what you want to search...",ru:"Введите запрос для поиска...", "zh-HK":"輸入要搜尋的內容⋯"},
+  "このアカウントの検索履歴を削除しました": {en:"Search history for this account was cleared",ru:"История поиска этого аккаунта очищена", "zh-HK":"已清除此帳戶的搜尋記錄"},
+  "メールのデータは現在のローカルアカウントに保存されます。実際の送受信にはメールサーバーが必要です。": {en:"Mail data is stored in this local account. A mail server is required for actual sending and receiving.",ru:"Почта хранится в локальном аккаунте. Для отправки и получения нужен почтовый сервер.", "zh-HK":"郵件資料會儲存在本機帳戶。真正收發郵件需要郵件伺服器。"},
+  "この画面では作成・下書き保存・送信済み一覧へのデモ登録ができます。実際のメール送信は行いません。": {en:"This demo lets you compose, save drafts, and add items to Sent. No real email is sent.",ru:"В демо можно создавать письма, сохранять черновики и добавлять записи в отправленные. Реальная отправка не выполняется.", "zh-HK":"此示範可撰寫郵件、儲存草稿及加入寄件備份，但不會真正寄出郵件。"},
+  "下書きを編集": {en:"Edit draft",ru:"Изменить черновик", "zh-HK":"編輯草稿"},
+  "ファイルをアップロード": {en:"Upload files",ru:"Загрузить файлы", "zh-HK":"上載檔案"},
+  "ファイルはまだありません。": {en:"There are no files yet.",ru:"Файлов пока нет.", "zh-HK":"目前沒有檔案。"},
+  "写真はまだありません。": {en:"There are no photos yet.",ru:"Фотографий пока нет.", "zh-HK":"目前沒有相片。"},
+  "上部から写真を追加してください。": {en:"Add photos using the area above.",ru:"Добавьте фотографии через область выше.", "zh-HK":"請使用上方區域新增相片。"},
+  "クリックまたはドラッグ＆ドロップ": {en:"Click or drag and drop",ru:"Нажмите или перетащите файлы", "zh-HK":"按一下或拖放檔案"},
+  "送信デモを保存しました（実際の送信は未実行）": {en:"Demo message saved (not actually sent)",ru:"Тестовое письмо сохранено (не отправлено)", "zh-HK":"示範郵件已儲存（並未真正寄出）"},
+  "ファイルを保存できませんでした": {en:"Could not save the file",ru:"Не удалось сохранить файл", "zh-HK":"無法儲存檔案"},
+  "このファイルを削除しますか？": {en:"Delete this file?",ru:"Удалить этот файл?", "zh-HK":"確定要刪除此檔案嗎？"},
+  "ダウンロードに失敗しました": {en:"Download failed",ru:"Не удалось скачать", "zh-HK":"下載失敗"}
+});
+
+function translateKey(japanese) {
+  const language = getSettings().language;
+  return language === "ja" ? japanese : (I18N[japanese]?.[language] || japanese);
+}
+const originalTextNodes = new WeakMap();
+const originalAttributes = new WeakMap();
+function translatePage(root = document.body) {
+  const language = getSettings().language;
+  if (!root) return;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+      const parent = node.parentElement;
+      if (!parent || ["SCRIPT","STYLE","CODE","TEXTAREA"].includes(parent.tagName)) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(node => {
+    if (!originalTextNodes.has(node)) originalTextNodes.set(node, node.nodeValue);
+    const original = originalTextNodes.get(node);
+    const trimmed = original.trim();
+    const translated = language === "ja" ? trimmed : (I18N[trimmed]?.[language] || trimmed);
+    const nextValue = original.replace(trimmed, translated);
+    if (node.nodeValue !== nextValue) node.nodeValue = nextValue;
+  });
+  root.querySelectorAll?.("input[placeholder],textarea[placeholder],button[title],button[aria-label],img[alt]").forEach(element => {
+    let saved = originalAttributes.get(element);
+    if (!saved) { saved = {}; originalAttributes.set(element, saved); }
+    ["placeholder","title","aria-label","alt"].forEach(attribute => {
+      const current = element.getAttribute(attribute);
+      if (current === null && !(attribute in saved)) return;
+      if (!(attribute in saved)) saved[attribute] = current;
+      const original = saved[attribute];
+      const translated = original && language !== "ja" ? (I18N[original]?.[language] || original) : original;
+      if (translated !== current) {
+        if (translated === null) element.removeAttribute(attribute);
+        else element.setAttribute(attribute, translated);
+      }
+    });
+  });
+}
+const localizationObserver = new MutationObserver(records => {
+  if (getSettings().language === "ja") return;
+  records.forEach(record => {
+    if (record.type === "characterData") translatePage(record.target.parentElement);
+    record.addedNodes?.forEach(node => {
+      if (node.nodeType === Node.ELEMENT_NODE) translatePage(node);
+      else if (node.nodeType === Node.TEXT_NODE && node.parentElement) translatePage(node.parentElement);
+    });
+  });
+});
+localizationObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+
+function restartBackgroundRotation() {
+  if (typeof backgroundRotationTimer !== "undefined" && backgroundRotationTimer) {
+    clearInterval(backgroundRotationTimer);
+    backgroundRotationTimer = null;
+  }
+  const settings = getSettings();
+  if (settings.backgroundRotation && typeof rotateBackground === "function") {
+    backgroundRotationTimer = window.setInterval(rotateBackground, settings.backgroundInterval * 1000);
+  }
+}
+
+function toggleFeatureCard(card) {
+  if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  const willOpen = !card.classList.contains("is-open");
+  document.querySelectorAll(".feature-card.is-open").forEach(item => item.classList.remove("is-open"));
+  if (willOpen) card.classList.add("is-open");
+}
+
+/* =====================================================
    Scroll reveal, scroll haptics, and subtle parallax
 ===================================================== */
 const scrollObserver = new IntersectionObserver(entries => {
@@ -1638,8 +2372,10 @@ window.addEventListener("scroll", () => {
 }, { passive: true });
 
 document.addEventListener("DOMContentLoaded", () => {
+  applySettings();
   restoreAccount();
-  console.log("10^100 initialized — shared local account prototype");
+  translatePage();
+  console.log("10^100 initialized — multilingual shared-account prototype");
 });
 </script>
 </body>
