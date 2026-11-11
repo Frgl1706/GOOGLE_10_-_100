@@ -1,4297 +1,1453 @@
-
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="theme-color" content="#f5f8ff">
 <title>10^100</title>
 
-<!-- Google Material Symbols -->
-<link rel="stylesheet"
-href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0">
-
-<!-- 日本語フォント -->
+<!-- Google Material Symbols / Noto Sans JP -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
-rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-
-/* =====================================================
-   1. 基本設定
-===================================================== */
-
 :root {
-    --main: #3977d5;
-    --main-dark: #2459ad;
-    --text: #26354d;
-    --muted: #77849a;
-    --glass: rgba(255,255,255,0.84);
-    --glass-light: rgba(255,255,255,0.91);
-    --border: rgba(255,255,255,0.85);
-    --shadow: 0 12px 40px rgba(47,69,105,0.12);
-    --radius: 20px;
-    --page-bg: none;
+  --blue: #3977d5;
+  --blue-dark: #2459ad;
+  --text: #26354d;
+  --muted: #7b899e;
+  --line: #e9eef6;
+  --glass: rgba(255,255,255,.88);
+  --shadow: 0 12px 40px rgba(47,69,105,.12);
 }
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 body {
-    min-height: 100vh;
-    font-family: "Noto Sans JP", Arial, sans-serif;
-    color: var(--text);
-    background: #ffffff;
-    overflow-x: hidden;
-    isolation: isolate;
+  min-height: 100vh;
+  color: var(--text);
+  background: #fff;
+  font-family: "Noto Sans JP", Arial, sans-serif;
+  overflow-x: hidden;
+  isolation: isolate;
 }
-
-/* =====================================================
-   2. 背景画像
-   BG.png → BG_fallback.jpg → Unsplash
-===================================================== */
-
+/* 背景画像は白いページの上に81%で重ね、レンズブラーを適用 */
 body::before {
-    content: "";
-
-    position: fixed;
-    inset: -25px;
-
-    z-index: -2;
-
-    background-image: var(--page-bg);
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-
-    /* レンズブラー */
-    filter:
-        blur(18px)
-        saturate(1.08)
-        brightness(1.06);
-
-    /* 背景の不透明度 */
-    opacity: 0.81;
-
-    transform: scale(1.05);
-
-    pointer-events: none;
+  content: "";
+  position: fixed;
+  inset: -24px;
+  z-index: -2;
+  background-image: var(--page-bg, linear-gradient(135deg,#f5f9ff,#dceaff));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(18px) saturate(1.08) brightness(1.05);
+  opacity: .81;
+  transform: scale(1.05);
+  pointer-events: none;
 }
-
 body::after {
-    content: "";
-
-    position: fixed;
-    inset: 0;
-
-    z-index: -1;
-
-    background: rgba(255,255,255,0.10);
-
-    pointer-events: none;
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(255,255,255,.19);
+  pointer-events: none;
 }
-
-/* =====================================================
-   3. 共通アイコン
-===================================================== */
-
 .material-symbols-rounded {
-    font-family: "Material Symbols Rounded";
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    white-space: nowrap;
-    direction: ltr;
-
-    -webkit-font-feature-settings: "liga";
-    -webkit-font-smoothing: antialiased;
+  font-family: "Material Symbols Rounded";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+  vertical-align: middle;
 }
-
-/* =====================================================
-   4. 共通ボタン
-===================================================== */
-
-button {
-    font-family: inherit;
-    color: inherit;
+button, input, textarea { font: inherit; }
+button { color: inherit; }
+button:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 3px solid rgba(57,119,213,.35);
+  outline-offset: 2px;
 }
+.hidden { display: none !important; }
 
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible {
-    outline: 3px solid rgba(57,119,213,0.4);
-    outline-offset: 3px;
-}
-
-.icon-button {
-    width: 43px;
-    height: 43px;
-
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-
-    border: none;
-    border-radius: 50%;
-
-    background: transparent;
-
-    cursor: pointer;
-
-    transition: 0.25s;
-}
-
-.icon-button:hover {
-    background: rgba(57,119,213,0.10);
-    transform: scale(1.05);
-}
-
-.primary-button {
-    border: none;
-    border-radius: 12px;
-
-    padding: 12px 22px;
-
-    background: var(--main);
-    color: white;
-
-    cursor: pointer;
-
-    transition: 0.25s;
-}
-
-.primary-button:hover {
-    background: var(--main-dark);
-    transform: translateY(-2px);
-}
-
-.secondary-button {
-    border: 1px solid #dce4f0;
-    border-radius: 12px;
-
-    padding: 11px 18px;
-
-    background: white;
-    color: var(--text);
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-.secondary-button:hover {
-    background: #f1f5fa;
-}
-
-/* =====================================================
-   5. ヘッダー
-===================================================== */
-
+/* Header */
 header {
-    position: fixed;
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: 72px;
-
-    padding: 0 28px;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    z-index: 100;
-
-    background: rgba(255,255,255,0.87);
-
-    backdrop-filter: blur(22px);
-    -webkit-backdrop-filter: blur(22px);
-
-    border-bottom: 1px solid rgba(255,255,255,0.95);
-
-    box-shadow: 0 3px 20px rgba(40,60,90,0.05);
+  position: fixed; inset: 0 0 auto 0; height: 72px; z-index: 100;
+  padding: 0 28px; display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,255,255,.90); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+  border-bottom: 1px solid rgba(255,255,255,.95); box-shadow: 0 3px 20px rgba(40,60,90,.05);
 }
-
-.header-left,
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.header-right a {
-    color: var(--text);
-    text-decoration: none;
-    font-size: 14px;
-}
-
-/* =====================================================
-   6. ユーゲン・ヨーソ
-===================================================== */
-
+.header-left, .header-right { display: flex; align-items: center; gap: 15px; }
 .assistant-trigger {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-
-    padding: 9px 15px;
-
-    border: 1px solid rgba(57,119,213,0.15);
-    border-radius: 30px;
-
-    background: rgba(235,243,255,0.85);
-
-    color: #315f9e;
-
-    font-weight: 600;
-    font-size: 13px;
-
-    cursor: pointer;
-
-    transition: 0.25s;
+  display: flex; align-items: center; gap: 8px; padding: 9px 15px;
+  border: 1px solid rgba(57,119,213,.15); border-radius: 30px;
+  background: rgba(235,243,255,.90); color: #315f9e; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: .2s;
 }
-
-.assistant-trigger:hover {
-    background: #e1edff;
-    transform: translateY(-2px);
+.assistant-trigger:hover { background: #e1edff; transform: translateY(-1px); }
+.assistant-trigger .material-symbols-rounded { color: var(--blue); }
+.header-mail { color: var(--text); text-decoration: none; font-size: 13px; cursor: pointer; }
+.header-mail:hover { color: var(--blue); }
+.icon-button {
+  width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center;
+  border: 0; border-radius: 50%; background: transparent; cursor: pointer; transition: .2s;
 }
-
-.assistant-trigger .material-symbols-rounded {
-    color: var(--main);
+.icon-button:hover { background: rgba(57,119,213,.10); }
+.account-button {
+  width: 42px; height: 42px; border: 2px solid #fff; border-radius: 50%; overflow: hidden;
+  background: #eaf2ff; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.12); transition: .2s;
 }
-
-.assistant-panel {
-    display: none;
-
-    position: fixed;
-
-    left: 20px;
-    top: 84px;
-
-    width: 360px;
-    max-width: calc(100vw - 40px);
-
-    height: 500px;
-    max-height: calc(100vh - 110px);
-
-    z-index: 150;
-
-    background: rgba(255,255,255,0.96);
-
-    border: 1px solid white;
-    border-radius: 22px;
-
-    box-shadow: 0 15px 55px rgba(32,55,90,0.20);
-
-    overflow: hidden;
-
-    flex-direction: column;
-
-    animation: slideDown 0.25s ease;
-}
-
-.assistant-panel.open {
-    display: flex;
-}
-
-.assistant-header {
-    padding: 17px;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    border-bottom: 1px solid #edf0f5;
-}
-
-.assistant-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.assistant-avatar {
-    width: 38px;
-    height: 38px;
-
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: linear-gradient(135deg,#dceaff,#a9c9ff);
-
-    color: #2459ad;
-}
-
-.assistant-description {
-    padding: 9px 17px;
-
-    font-size: 11px;
-    color: var(--muted);
-
-    background: #f8faff;
-}
-
-.assistant-messages {
-    flex: 1;
-
-    padding: 15px;
-
-    overflow-y: auto;
-
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.chat-message {
-    max-width: 88%;
-    padding: 12px 14px;
-
-    border-radius: 15px;
-
-    font-size: 13px;
-    line-height: 1.7;
-
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-}
-
-.chat-message.bot {
-    align-self: flex-start;
-    background: #eef4ff;
-    border-bottom-left-radius: 4px;
-}
-
-.chat-message.user {
-    align-self: flex-end;
-    color: white;
-    background: var(--main);
-    border-bottom-right-radius: 4px;
-}
-
-.assistant-quick {
-    padding: 8px 12px;
-
-    display: flex;
-    gap: 7px;
-    flex-wrap: wrap;
-
-    border-top: 1px solid #edf0f5;
-}
-
-.quick-button {
-    border: 1px solid #d9e4f4;
-    background: #f8faff;
-
-    color: #4772ad;
-
-    padding: 7px 10px;
-
-    border-radius: 20px;
-
-    font-size: 11px;
-
-    cursor: pointer;
-}
-
-.assistant-form {
-    padding: 12px;
-
-    display: flex;
-    gap: 8px;
-
-    border-top: 1px solid #edf0f5;
-}
-
-.assistant-form input {
-    flex: 1;
-    min-width: 0;
-
-    border: 1px solid #dce4f0;
-    border-radius: 22px;
-
-    padding: 11px 14px;
-
-    outline: none;
-}
-
-.assistant-form button {
-    width: 42px;
-    height: 42px;
-
-    border: none;
-    border-radius: 50%;
-
-    color: white;
-    background: var(--main);
-
-    cursor: pointer;
-}
-
-/* =====================================================
-   7. アカウントアイコン
-===================================================== */
-
-.account {
-    width: 42px;
-    height: 42px;
-
-    border-radius: 50%;
-    overflow: hidden;
-
-    border: 2px solid white;
-
-    cursor: pointer;
-
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-
-    transition: 0.25s;
-}
-
-.account:hover {
-    transform: scale(1.07);
-}
-
-.account img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* =====================================================
-   8. ヘッダーポップアップ
-===================================================== */
-
+.account-button:hover { transform: scale(1.06); }
+.account-button img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .header-popup {
-    display: none;
-
-    position: absolute;
-
-    top: 63px;
-    right: 25px;
-
-    width: 285px;
-
-    padding: 15px;
-
-    border-radius: 20px;
-
-    background: rgba(255,255,255,0.96);
-
-    border: 1px solid white;
-
-    backdrop-filter: blur(25px);
-
-    box-shadow: 0 12px 45px rgba(30,50,80,0.15);
-
-    animation: slideDown 0.25s ease;
+  display: none; position: absolute; top: 63px; right: 25px; width: 286px; padding: 14px;
+  border-radius: 20px; background: rgba(255,255,255,.97); border: 1px solid #fff;
+  box-shadow: 0 12px 45px rgba(30,50,80,.16); backdrop-filter: blur(25px); animation: slideDown .22s ease;
 }
-
-.header-popup.active {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-}
-
+.header-popup.active { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
 .popup-item {
-    display: flex;
-
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    gap: 7px;
-
-    padding: 15px 5px;
-
-    border-radius: 14px;
-
-    color: var(--text);
-    text-decoration: none;
-
-    cursor: pointer;
-
-    font-size: 12px;
-
-    border: none;
-    background: transparent;
-
-    transition: 0.2s;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px;
+  min-height: 80px; padding: 12px 5px; border: 0; border-radius: 14px; background: transparent;
+  color: var(--text); font-size: 12px; cursor: pointer; transition: .2s;
 }
+.popup-item:hover { background: #edf4ff; color: var(--blue); }
+.popup-item .material-symbols-rounded { color: #5482c5; font-size: 29px; }
+.account-popup { grid-template-columns: 1fr !important; text-align: center; }
+.account-popup img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; }
+.account-email { color: var(--muted); font-size: 11px; margin-top: 5px; overflow-wrap: anywhere; }
+.popup-actions { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
 
-.popup-item:hover {
-    background: #edf4ff;
-    color: var(--main);
+/* Home */
+#homePage { display: block; }
+main.home-main {
+  min-height: 100vh; padding: 110px 20px 45px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
 }
-
-.popup-item .material-symbols-rounded {
-    font-size: 29px;
-    color: #5482c5;
-}
-
-.account-popup {
-    grid-template-columns: 1fr !important;
-    text-align: center;
-}
-
-.account-popup img {
-    border-radius: 50%;
-    width: 75px;
-    height: 75px;
-    object-fit: cover;
-    margin-bottom: 12px;
-}
-
-/* =====================================================
-   9. ホーム画面
-===================================================== */
-
-#homePage {
-    display: block;
-}
-
-main {
-    min-height: 100vh;
-
-    display: flex;
-    flex-direction: column;
-
-    justify-content: center;
-    align-items: center;
-
-    padding: 100px 20px 40px;
-
-    text-align: center;
-}
-
-/* 10^100 PNGロゴ */
-
 .brand-banner {
-    width: min(540px,80vw);
-    max-height: 190px;
-
-    object-fit: contain;
-
-    animation: fadeIn 1s ease;
-
-    filter: drop-shadow(0 8px 15px rgba(35,60,100,0.10));
+  width: min(540px,80vw); max-height: 190px; object-fit: contain;
+  filter: drop-shadow(0 8px 15px rgba(35,60,100,.10)); animation: fadeIn 1s ease;
 }
-
-.logo-fallback {
-    font-size: clamp(65px,10vw,110px);
-    font-weight: 700;
-    color: #315c9d;
-}
-
-.subtitle {
-    margin-top: 14px;
-
-    font-size: 14px;
-    letter-spacing: 4px;
-
-    color: #60728e;
-}
-
-/* =====================================================
-   10. ホーム検索窓
-===================================================== */
-
+.logo-fallback { display: none; font-size: clamp(65px,10vw,110px); font-weight: 700; color: #315c9d; }
+.subtitle { margin-top: 14px; font-size: 14px; letter-spacing: 4px; color: #60728e; }
 .search-container {
-    margin-top: 40px;
-
-    width: min(600px,90vw);
-
-    padding: 7px;
-
-    display: flex;
-    align-items: center;
-
-    border-radius: 50px;
-
-    background: rgba(255,255,255,0.87);
-
-    border: 1px solid white;
-
-    backdrop-filter: blur(22px);
-
-    box-shadow: var(--shadow);
-
-    transition: 0.3s;
+  margin-top: 40px; width: min(600px,90vw); padding: 7px; display: flex; align-items: center;
+  border-radius: 50px; background: rgba(255,255,255,.90); border: 1px solid #fff;
+  backdrop-filter: blur(22px); box-shadow: var(--shadow); transition: .25s;
 }
-
-.search-container:focus-within {
-    background: rgba(255,255,255,0.97);
-
-    box-shadow: 0 0 0 4px rgba(57,119,213,0.10),
-                0 12px 35px rgba(40,70,120,0.15);
-
-    transform: scale(1.015);
+.search-container:focus-within { background: rgba(255,255,255,.98); box-shadow: 0 0 0 4px rgba(57,119,213,.10),0 12px 35px rgba(40,70,120,.15); transform: scale(1.015); }
+.search-container input { flex: 1; min-width: 0; padding: 15px 20px; border: 0; outline: 0; background: transparent; color: var(--text); font-size: 16px; }
+.search-container input::placeholder { color: #9aa6b7; }
+.search-button { width: 47px; height: 47px; border: 0; border-radius: 50%; color: #fff; background: var(--blue); cursor: pointer; transition: .2s; }
+.search-button:hover { background: var(--blue-dark); transform: scale(1.05); }
+.home-buttons { margin-top: 25px; display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.glass-button, .secondary-button {
+  padding: 11px 20px; color: #42536c; background: rgba(255,255,255,.88); border: 1px solid #fff;
+  border-radius: 11px; cursor: pointer; font-size: 13px; box-shadow: 0 4px 15px rgba(30,60,100,.06); transition: .2s;
 }
+.glass-button:hover, .secondary-button:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(30,60,100,.12); }
+.primary-button { padding: 11px 19px; border: 0; border-radius: 11px; background: var(--blue); color: #fff; cursor: pointer; transition: .2s; }
+.primary-button:hover { background: var(--blue-dark); transform: translateY(-1px); }
+.home-section { min-height: 60vh; padding: 90px 20px; display: flex; justify-content: center; align-items: center; }
+.glass-card { width: min(760px,100%); padding: 50px 40px; text-align: center; border: 1px solid #fff; border-radius: 25px; background: rgba(255,255,255,.90); backdrop-filter: blur(25px); box-shadow: var(--shadow); }
+.glass-card h1 { color: #355987; margin-bottom: 18px; }
+.glass-card p { color: #718098; line-height: 1.9; }
+.reveal { opacity: 0; transform: translateY(45px); transition: opacity .8s ease, transform .8s ease; }
+.reveal.show { opacity: 1; transform: translateY(0); }
+footer { padding: 27px; text-align: center; color: #8a99ad; font-size: 11px; background: rgba(255,255,255,.86); backdrop-filter: blur(15px); border-top: 1px solid #fff; }
 
-.search-container input {
-    flex: 1;
-    min-width: 0;
-
-    padding: 15px 20px;
-
-    border: none;
-    outline: none;
-
-    background: transparent;
-
-    color: var(--text);
-
-    font-size: 16px;
+/* Assistant */
+.assistant-panel {
+  display: none; position: fixed; left: 20px; top: 84px; z-index: 160;
+  width: 360px; max-width: calc(100vw - 40px); height: 500px; max-height: calc(100vh - 110px);
+  flex-direction: column; overflow: hidden; border: 1px solid #fff; border-radius: 22px;
+  background: rgba(255,255,255,.97); box-shadow: 0 15px 55px rgba(32,55,90,.20);
 }
+.assistant-panel.open { display: flex; animation: slideDown .22s ease; }
+.assistant-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 17px; border-bottom: 1px solid var(--line); }
+.assistant-title { display: flex; align-items: center; gap: 10px; }
+.assistant-avatar { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(135deg,#dceaff,#a9c9ff); color: #2459ad; }
+.assistant-subtitle { margin-top: 3px; color: var(--muted); font-size: 10px; }
+.assistant-description { padding: 9px 17px; color: var(--muted); background: #f8faff; font-size: 11px; }
+.assistant-messages { flex: 1; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding: 15px; }
+.chat-message { max-width: 88%; padding: 11px 13px; border-radius: 15px; font-size: 12px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
+.chat-message.bot { align-self: flex-start; background: #eef4ff; border-bottom-left-radius: 4px; }
+.chat-message.user { align-self: flex-end; color: white; background: var(--blue); border-bottom-right-radius: 4px; }
+.assistant-quick { display: flex; flex-wrap: wrap; gap: 7px; padding: 8px 12px; border-top: 1px solid var(--line); }
+.quick-button { padding: 7px 10px; border: 1px solid #d9e4f4; border-radius: 20px; color: #4772ad; background: #f8faff; font-size: 11px; cursor: pointer; }
+.assistant-form { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); }
+.assistant-form input { flex: 1; min-width: 0; padding: 10px 14px; border: 1px solid #dce4f0; border-radius: 22px; outline: none; font-size: 12px; }
+.assistant-form button { width: 42px; height: 42px; border: 0; border-radius: 50%; color: #fff; background: var(--blue); cursor: pointer; }
 
-.search-container input::placeholder {
-    color: #9aa6b7;
-}
-
-.search-button {
-    width: 47px;
-    height: 47px;
-
-    border: none;
-    border-radius: 50%;
-
-    color: white;
-    background: var(--main);
-
-    cursor: pointer;
-
-    transition: 0.25s;
-}
-
-.search-button:hover {
-    background: var(--main-dark);
-    transform: scale(1.06);
-}
-
-/* =====================================================
-   11. ホームボタン
-===================================================== */
-
-.buttons {
-    margin-top: 25px;
-
-    display: flex;
-    gap: 14px;
-}
-
-.glass-button {
-    padding: 12px 23px;
-
-    color: #42536c;
-
-    background: rgba(255,255,255,0.82);
-
-    border: 1px solid white;
-    border-radius: 10px;
-
-    backdrop-filter: blur(15px);
-
-    cursor: pointer;
-
-    font-size: 13px;
-
-    transition: 0.3s;
-
-    box-shadow: 0 4px 15px rgba(30,60,100,0.06);
-}
-
-.glass-button:hover {
-    background: white;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(30,60,100,0.12);
-}
-
-/* =====================================================
-   12. ホーム下部コンテンツ
-===================================================== */
-
-.home-section {
-    min-height: 65vh;
-
-    padding: 100px 20px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.glass-card {
-    max-width: 760px;
-    width: 100%;
-
-    padding: 55px 40px;
-
-    border-radius: 25px;
-
-    background: rgba(255,255,255,0.88);
-
-    border: 1px solid white;
-
-    backdrop-filter: blur(25px);
-
-    box-shadow: var(--shadow);
-
-    text-align: center;
-}
-
-.glass-card h1 {
-    margin-bottom: 20px;
-    color: #355987;
-}
-
-.glass-card p {
-    line-height: 1.9;
-    color: #718098;
-}
-
-/* =====================================================
-   13. スクロールアニメーション
-===================================================== */
-
-.reveal {
-    opacity: 0;
-    transform: translateY(50px);
-
-    transition:
-        opacity 0.8s ease,
-        transform 0.8s ease;
-}
-
-.reveal.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(25px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* =====================================================
-   14. アプリケーション画面
-===================================================== */
-
+/* Workspace */
 .workspace {
-    display: none;
+  display: none; position: fixed; inset: 88px 22px 18px; z-index: 80; overflow: hidden;
+  border: 1px solid #fff; border-radius: 25px; background: rgba(255,255,255,.95);
+  box-shadow: 0 15px 55px rgba(30,50,80,.15); backdrop-filter: blur(25px);
+}
+.workspace.active { display: flex; animation: fadeIn .25s ease; }
+.side-nav { flex: 0 0 205px; padding: 22px 13px; background: rgba(239,245,253,.90); border-right: 1px solid #edf1f6; }
+.side-nav-title { padding: 5px 12px 18px; color: #8a98ad; font-size: 11px; font-weight: 700; letter-spacing: 2px; }
+.app-nav { width: 100%; display: flex; align-items: center; gap: 12px; margin-bottom: 7px; padding: 12px 15px; border: 0; border-radius: 12px; background: transparent; color: #61728b; text-align: left; font-size: 13px; cursor: pointer; transition: .2s; }
+.app-nav:hover { background: #e8f0fd; }
+.app-nav.active { background: #dfeaff; color: #2867bd; font-weight: 700; }
+.app-nav .material-symbols-rounded { font-size: 21px; }
+.work-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.work-topbar { min-height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 27px; border-bottom: 1px solid #edf0f5; }
+.work-topbar h2 { color: #344c6d; font-size: 18px; }
+.work-topbar .account-context { color: var(--muted); font-size: 11px; margin-left: 12px; }
+.work-content { flex: 1; min-height: 0; padding: 27px; overflow-y: auto; }
+.app-heading { margin-bottom: 20px; }
+.app-heading h2 { color: #354f72; font-size: 20px; }
+.app-heading p { margin-top: 7px; color: var(--muted); font-size: 12px; }
+.app-card { padding: 22px; border: 1px solid #eaf0f8; border-radius: 17px; background: rgba(255,255,255,.94); box-shadow: 0 5px 20px rgba(35,60,100,.045); }
+.app-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+.app-input { width: 100%; padding: 12px 14px; border: 1px solid #dce5f0; border-radius: 10px; background: #fff; color: var(--text); font-size: 13px; }
+.app-textarea { width: 100%; min-height: 180px; padding: 14px; resize: vertical; border: 1px solid #dce5f0; border-radius: 10px; font-size: 13px; line-height: 1.7; }
+.empty-state { padding: 48px 20px; text-align: center; color: #91a0b4; }
+.empty-state .material-symbols-rounded { display: block; margin-bottom: 12px; color: #aac0df; font-size: 45px; }
+.empty-state p { font-size: 12px; line-height: 1.8; }
 
-    position: fixed;
+/* Search */
+.search-app { max-width: 850px; margin: 0 auto; }
+.app-search-box { display: flex; gap: 9px; margin-bottom: 25px; }
+.app-search-box input { flex: 1; min-width: 0; padding: 13px 18px; border: 1px solid #dce5f0; border-radius: 30px; outline: none; }
+.search-history { display: flex; flex-direction: column; gap: 4px; }
+.history-item { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 0; border-radius: 10px; background: transparent; color: #536783; text-align: left; cursor: pointer; }
+.history-item:hover { background: #f0f5fc; }
+.info-panel { margin-top: 18px; padding: 17px; border-radius: 14px; background: #eff5ff; color: #58739b; font-size: 12px; line-height: 1.8; }
 
-    inset: 88px 22px 18px;
+/* Mail */
+.mail-layout { display: grid; grid-template-columns: 175px minmax(0,1fr); gap: 20px; }
+.mail-sidebar { display: flex; flex-direction: column; gap: 7px; }
+.mail-folder { display: flex; align-items: center; gap: 10px; padding: 11px; border: 0; border-radius: 10px; background: transparent; color: #64758d; text-align: left; font-size: 12px; cursor: pointer; }
+.mail-folder:hover { background: #edf4ff; }
+.mail-folder.active { background: #dceaff; color: #285eac; font-weight: 700; }
+.mail-folder .material-symbols-rounded { font-size: 20px; }
+.mail-main { min-width: 0; }
+.mail-list { display: flex; flex-direction: column; gap: 7px; }
+.mail-item { width: 100%; display: grid; grid-template-columns: 145px minmax(0,1fr) 95px; align-items: center; gap: 10px; padding: 14px; border: 1px solid #edf1f5; border-radius: 10px; background: #fff; text-align: left; cursor: pointer; transition: .2s; }
+.mail-item:hover { background: #f5f8fd; transform: translateX(2px); }
+.mail-item strong { color: #445a77; font-size: 12px; }
+.mail-item-title { color: #41536b; font-size: 12px; font-weight: 600; }
+.mail-item-preview { display: block; margin-top: 4px; color: #96a2b2; font-size: 11px; }
+.mail-date { color: #98a4b4; font-size: 10px; text-align: right; }
+.mail-compose { max-width: 780px; margin: auto; }
+.mail-compose-field { margin-bottom: 17px; }
+.mail-compose-field label { display: block; margin-bottom: 8px; color: #6a7b92; font-size: 12px; }
+.mail-detail { max-width: 850px; margin: auto; }
+.mail-body { padding: 24px 0; color: #65748a; font-size: 13px; line-height: 2; white-space: pre-wrap; }
 
-    z-index: 80;
+/* Drive */
+.upload-zone { padding: 32px 20px; border: 2px dashed #b9cce8; border-radius: 17px; background: #f7faff; text-align: center; cursor: pointer; transition: .2s; }
+.upload-zone:hover, .upload-zone.dragging { border-color: var(--blue); background: #eaf2ff; }
+.upload-zone .material-symbols-rounded { color: #6e9ad4; font-size: 42px; }
+.upload-zone h3 { margin: 9px 0; font-size: 14px; }
+.upload-zone p { color: var(--muted); font-size: 11px; }
+.file-list { display: flex; flex-direction: column; gap: 8px; }
+.file-item { display: flex; align-items: center; gap: 13px; padding: 12px 14px; border: 1px solid #edf0f5; border-radius: 11px; background: #fff; }
+.file-icon { width: 40px; height: 40px; flex: 0 0 40px; display: grid; place-items: center; border-radius: 10px; background: #eaf2ff; color: #5988cb; }
+.file-name { flex: 1; min-width: 0; overflow-wrap: anywhere; font-size: 12px; font-weight: 600; }
+.file-size { margin-top: 4px; color: #96a2b2; font-size: 10px; font-weight: 400; }
+.file-actions { display: flex; gap: 3px; }
 
-    background: rgba(255,255,255,0.94);
+/* Photos */
+.photo-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(155px,1fr)); gap: 15px; }
+.photo-card { overflow: hidden; border: 1px solid #edf0f5; border-radius: 14px; background: #fff; cursor: pointer; transition: .2s; }
+.photo-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.photo-thumb { display: block; width: 100%; height: 155px; object-fit: cover; background: #eef3fa; }
+.photo-info { padding: 10px; color: #5e7089; font-size: 11px; overflow-wrap: anywhere; }
 
-    border: 1px solid white;
-    border-radius: 25px;
+/* Modal / account */
+.modal { display: none; position: fixed; inset: 0; z-index: 300; align-items: center; justify-content: center; padding: 18px; background: rgba(25,40,65,.36); backdrop-filter: blur(8px); }
+.modal.active { display: flex; }
+.modal-box { width: min(480px,100%); max-height: min(90vh,760px); overflow-y: auto; padding: 25px; border: 1px solid #fff; border-radius: 22px; background: rgba(255,255,255,.98); box-shadow: 0 15px 60px rgba(0,0,0,.2); }
+.modal-box h2 { margin-bottom: 8px; color: #354f72; font-size: 19px; }
+.modal-description { margin-bottom: 20px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.form-field { margin-bottom: 15px; }
+.form-field label { display: block; margin-bottom: 7px; color: #64758d; font-size: 12px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 9px; flex-wrap: wrap; margin-top: 20px; }
+.account-list { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
+.account-choice { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid #e7edf6; border-radius: 12px; background: #fff; text-align: left; cursor: pointer; }
+.account-choice:hover { background: #f2f6fd; }
+.account-choice img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+.account-choice span { display: block; }
+.account-choice small { display: block; color: var(--muted); margin-top: 3px; }
+.preview-image { max-width: 85vw; max-height: 78vh; object-fit: contain; border-radius: 12px; }
+.toast { position: fixed; left: 50%; bottom: 25px; z-index: 500; transform: translate(-50%,20px); padding: 12px 20px; border-radius: 30px; background: rgba(37,55,82,.95); color: #fff; font-size: 12px; opacity: 0; pointer-events: none; transition: .25s; }
+.toast.show { opacity: 1; transform: translate(-50%,0); }
 
-    box-shadow: 0 15px 55px rgba(30,50,80,0.15);
-
-    backdrop-filter: blur(25px);
-
-    overflow: hidden;
+@keyframes fadeIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+@media(max-width:760px) {
+  header { height: 65px; padding: 0 12px; }
+  .header-left,.header-right { gap: 7px; }
+  .assistant-trigger { gap: 5px; padding: 8px 10px; font-size: 11px; }
+  .header-mail { font-size: 11px; }
+  .workspace { inset: 75px 7px 8px; border-radius: 17px; }
+  .side-nav { flex-basis: 62px; padding: 14px 5px; }
+  .side-nav-title { display: none; }
+  .app-nav { justify-content: center; padding: 12px 3px; }
+  .app-nav span:last-child { display: none; }
+  .work-content { padding: 14px; }
+  .work-topbar { min-height: 60px; padding: 0 14px; }
+  .mail-layout { grid-template-columns: 1fr; }
+  .mail-sidebar { flex-direction: row; flex-wrap: wrap; }
+  .mail-item { grid-template-columns: 1fr auto; }
+  .mail-item strong { grid-column: 1 / -1; }
+  .mail-date { grid-column: 2; grid-row: 1; }
+  .glass-card { padding: 35px 20px; }
+}
+@media(max-width:430px) {
+  .assistant-trigger { max-width: 155px; }
+  .assistant-trigger .assistant-label { white-space: nowrap; }
+  .brand-banner { width: 86vw; }
+  .mail-item { grid-template-columns: 1fr; }
+  .mail-date { grid-column: 1; grid-row: auto; text-align: left; }
+  .work-topbar .account-context { display: none; }
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 
-.workspace.active {
-    display: flex;
-    animation: fadeIn 0.3s ease;
-}
-
-/* サイドバー */
-
-.side-nav {
-    width: 205px;
-    flex-shrink: 0;
-
-    padding: 22px 13px;
-
-    background: rgba(239,245,253,0.88);
-
-    border-right: 1px solid #edf1f6;
-}
-
-.side-nav-title {
-    padding: 5px 12px 18px;
-
-    color: #8a98ad;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-}
-
-.app-nav {
-    width: 100%;
-
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    padding: 12px 15px;
-
-    margin-bottom: 7px;
-
-    border: none;
-    border-radius: 12px;
-
-    background: transparent;
-
-    color: #61728b;
-
-    text-align: left;
-    font-size: 13px;
-
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.app-nav:hover {
-    background: #e8f0fd;
-}
-
-.app-nav.active {
-    color: #2867bd;
-    background: #dfeaff;
-    font-weight: 700;
-}
-
-.app-nav .material-symbols-rounded {
-    font-size: 21px;
-}
-
-/* アプリのメイン領域 */
-
-.work-main {
-    flex: 1;
-    min-width: 0;
-
-    display: flex;
-    flex-direction: column;
-}
-
-.work-topbar {
-    min-height: 70px;
-
-    padding: 0 27px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    border-bottom: 1px solid #edf0f5;
-}
-
-.work-topbar h2 {
-    font-size: 18px;
-    color: #344c6d;
-}
-
-.work-content {
-    flex: 1;
-    min-height: 0;
-
-    padding: 28px;
-
-    overflow-y: auto;
-}
-
-/* アプリ共通パネル */
-
-.app-card {
-    padding: 23px;
-
-    background: rgba(255,255,255,0.91);
-
-    border: 1px solid #eaf0f8;
-    border-radius: 17px;
-
-    box-shadow: 0 5px 20px rgba(35,60,100,0.045);
-}
-
-.app-heading {
-    margin-bottom: 20px;
-}
-
-.app-heading h2 {
-    font-size: 20px;
-    color: #354f72;
-}
-
-.app-heading p {
-    margin-top: 7px;
-    font-size: 12px;
-    color: var(--muted);
-}
-
-.app-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-
-    margin-bottom: 20px;
-}
-
-.app-input {
-    width: 100%;
-
-    padding: 12px 14px;
-
-    border: 1px solid #dce5f0;
-    border-radius: 10px;
-
-    color: var(--text);
-    background: white;
-
-    font-family: inherit;
-    font-size: 13px;
-}
-
-.app-textarea {
-    width: 100%;
-
-    min-height: 180px;
-
-    padding: 14px;
-
-    border: 1px solid #dce5f0;
-    border-radius: 10px;
-
-    resize: vertical;
-
-    font-family: inherit;
-    font-size: 13px;
-    line-height: 1.7;
-}
-
-.empty-state {
-    padding: 55px 20px;
-
-    text-align: center;
-    color: #91a0b4;
-}
-
-.empty-state .material-symbols-rounded {
-    display: block;
-    font-size: 48px;
-    margin-bottom: 12px;
-    color: #aac0df;
-}
-
-.empty-state p {
-    font-size: 13px;
-    line-height: 1.8;
-}
 
 /* =====================================================
-   15. 検索アプリ
+   Reference-matched home layout + scroll motion
 ===================================================== */
-
-.search-app {
-    max-width: 850px;
-    margin: 0 auto;
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
 }
-
-.app-search-box {
-    display: flex;
-    gap: 9px;
-
-    margin-bottom: 30px;
+header {
+  height: 44px;
+  padding: 0 18px;
+  background: rgba(190, 229, 242, .97);
+  border-bottom: 1px solid rgba(255,255,255,.72);
+  box-shadow: none;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
-
-.app-search-box input {
-    flex: 1;
-    min-width: 0;
-
-    border: 1px solid #dce5f0;
-    border-radius: 30px;
-
-    padding: 14px 20px;
-
-    outline: none;
+.header-left, .header-right { gap: 12px; }
+.assistant-trigger {
+  padding: 5px 10px;
+  border-color: rgba(40,105,145,.12);
+  background: rgba(255,255,255,.35);
+  color: #275a76;
+  font-size: 11px;
 }
+.assistant-trigger:hover { background: rgba(255,255,255,.62); }
+.header-mail { color: #285a73; font-size: 11px; }
+.header-right .icon-button { width: 32px; height: 32px; color: #285a73; }
+.account-button { width: 31px; height: 31px; border-color: rgba(255,255,255,.95); }
+.header-popup { top: 49px; }
+.assistant-panel { top: 54px; }
 
-.search-history {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+#homePage { display: block; }
+.hero-panel {
+  position: relative;
+  min-height: 100svh;
+  padding: 70px clamp(28px, 7vw, 90px) 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: start;
+  overflow: hidden;
 }
-
-.history-item {
-    padding: 12px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    border-radius: 10px;
-
-    cursor: pointer;
-
-    color: #536783;
-    background: transparent;
-    border: none;
-    text-align: left;
+.hero-layout {
+  width: min(1080px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(36px, 8vw, 120px);
 }
-
-.history-item:hover {
-    background: #f0f5fc;
+.hero-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
 }
-
-.search-result-info {
-    padding: 20px;
-    margin-top: 20px;
-
-    background: #eff5ff;
-    border-radius: 15px;
-
-    color: #58739b;
-
-    line-height: 1.9;
-    font-size: 13px;
+.hero-banner {
+  display: block;
+  width: min(360px, 100%);
+  max-height: 210px;
+  object-fit: contain;
+  filter: none;
+  transform: translate3d(0, var(--hero-parallax, 0px), 0);
+  will-change: transform;
 }
-
-/* =====================================================
-   16. メールアプリ
-===================================================== */
-
-.mail-layout {
-    display: grid;
-    grid-template-columns: 175px minmax(0,1fr);
-    gap: 20px;
+.hero-banner-large { width: min(390px, 100%); max-height: 235px; }
+.hero-logo-fallback {
+  color: #050505;
+  font-family: Arial, sans-serif;
+  font-size: clamp(92px, 13vw, 150px);
+  font-weight: 700;
+  letter-spacing: -9px;
+  line-height: .95;
+  white-space: nowrap;
 }
-
-.mail-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
+.hero-logo-fallback sup { font-size: .39em; vertical-align: super; letter-spacing: -4px; }
+.hero-copy { min-width: 0; }
+.hero-copy h1,
+.hero-copy h2 {
+  color: #080808;
+  font-size: clamp(23px, 2.5vw, 32px);
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: .015em;
 }
-
-.mail-folder {
-    border: none;
-    border-radius: 10px;
-
-    padding: 12px;
-
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    background: transparent;
-
-    color: #64758d;
-    text-align: left;
-
-    font-size: 12px;
-
-    cursor: pointer;
+.hero-copy p {
+  max-width: 330px;
+  margin-top: 29px;
+  color: #858585;
+  font-size: clamp(14px, 1.45vw, 17px);
+  font-weight: 700;
+  line-height: 1.55;
+  letter-spacing: .025em;
 }
-
-.mail-folder:hover {
-    background: #edf4ff;
+.hero-copy-left h2 { font-style: italic; font-size: clamp(29px, 3vw, 39px); }
+.hero-copy-left p { margin-top: 16px; }
+.hero-copy-left .welcome-lead { margin-top: 24px; }
+.hero-panel-one .hero-copy { padding-left: 2px; }
+.hero-panel-two {
+  padding-top: 118px;
+  align-items: center;
 }
-
-.mail-folder.active {
-    background: #dceaff;
-    color: #285eac;
-    font-weight: 700;
+.hero-action-row {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  gap: 11px;
+  width: min(100% - 30px, 430px);
 }
-
-.mail-folder .material-symbols-rounded {
-    font-size: 20px;
+.hero-action-button {
+  min-width: 190px;
+  padding: 9px 17px;
+  border: 1px solid #e9edf3;
+  border-radius: 18px;
+  background: rgba(255,255,255,.94);
+  color: #6d7785;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(35,60,90,.035);
+  transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
 }
-
-.mail-main {
-    min-width: 0;
+.hero-action-button:hover {
+  transform: translateY(-2px);
+  background: #fff;
+  box-shadow: 0 7px 20px rgba(35,60,90,.10);
 }
-
-.mail-list {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
+.welcome-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
 }
-
-.mail-item {
-    width: 100%;
-
-    display: grid;
-    grid-template-columns: 145px minmax(0,1fr) 85px;
-    align-items: center;
-    gap: 10px;
-
-    padding: 15px;
-
-    background: white;
-
-    border: 1px solid #edf1f5;
-    border-radius: 10px;
-
-    text-align: left;
-
-    cursor: pointer;
-
-    transition: 0.2s;
+.welcome-links button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 11px;
+  border: 1px solid #e8edf4;
+  border-radius: 20px;
+  color: #62758e;
+  background: rgba(255,255,255,.88);
+  font-size: 11px;
+  cursor: pointer;
+  transition: .2s;
 }
-
-.mail-item:hover {
-    background: #f5f8fd;
-    transform: translateX(2px);
+.welcome-links button:hover { color: var(--blue); background: #fff; transform: translateY(-2px); }
+.welcome-links .material-symbols-rounded { font-size: 16px; }
+.scroll-cue {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #a0afbf;
+  font-size: 9px;
+  letter-spacing: 2px;
+  animation: cueFloat 1.8s ease-in-out infinite;
 }
-
-.mail-item strong {
-    font-size: 12px;
-    color: #445a77;
+.scroll-cue .material-symbols-rounded { font-size: 17px; }
+.scroll-reveal {
+  opacity: 0;
+  transform: translate3d(0, 34px, 0);
+  transition: opacity .85s cubic-bezier(.2,.7,.2,1), transform .85s cubic-bezier(.2,.7,.2,1);
 }
-
-.mail-item-title {
-    font-size: 12px;
-    font-weight: 600;
-    color: #41536b;
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0,0,0);
 }
-
-.mail-item-preview {
-    display: block;
-    margin-top: 4px;
-
-    font-size: 11px;
-    color: #96a2b2;
+.hero-copy-right.scroll-reveal { transition-delay: .12s; }
+.hero-banner-large { filter: drop-shadow(0 12px 18px rgba(20,30,50,.045)); }
+.home-search-modal .modal-box { width: min(460px,100%); }
+@keyframes cueFloat {
+  0%,100% { transform: translate(-50%,0); }
+  50% { transform: translate(-50%,6px); }
 }
-
-.mail-date {
-    font-size: 10px;
-    color: #98a4b4;
-    text-align: right;
+@media(max-width:700px) {
+  header { padding: 0 9px; }
+  .header-left, .header-right { gap: 5px; }
+  .assistant-trigger { max-width: 145px; padding: 5px 8px; }
+  .assistant-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .header-mail { font-size: 10px; }
+  .hero-panel { min-height: 92svh; padding: 90px 25px 55px; }
+  .hero-layout { grid-template-columns: 1fr 1fr; gap: 18px; }
+  .hero-banner { width: 100%; max-height: 145px; }
+  .hero-banner-large { max-height: 165px; }
+  .hero-copy h1, .hero-copy h2 { font-size: clamp(18px, 4vw, 25px); }
+  .hero-copy p { margin-top: 16px; font-size: 12px; }
+  .hero-copy-left .welcome-lead { margin-top: 16px; }
+  .hero-action-row { top: 45px; gap: 7px; }
+  .hero-action-button { min-width: 0; flex: 1; padding: 9px 8px; font-size: 11px; }
+  .hero-logo-fallback { font-size: 72px; letter-spacing: -6px; }
+  .welcome-links { gap: 5px; margin-top: 13px; }
+  .welcome-links button { font-size: 10px; padding: 6px 8px; }
 }
-
-.mail-compose {
-    max-width: 780px;
-    margin: auto;
+@media(max-width:430px) {
+  .hero-panel { min-height: 88svh; padding-left: 19px; padding-right: 19px; }
+  .hero-layout { gap: 11px; }
+  .hero-copy h1, .hero-copy h2 { font-size: 17px; }
+  .hero-copy p { font-size: 11px; }
+  .hero-banner { max-height: 115px; }
+  .hero-banner-large { max-height: 130px; }
+  .hero-logo-fallback { font-size: 55px; letter-spacing: -5px; }
+  .welcome-links button { padding: 5px 6px; }
+  .welcome-links .material-symbols-rounded { font-size: 14px; }
 }
-
-.mail-compose label {
-    display: block;
-    margin-bottom: 8px;
-
-    font-size: 12px;
-    color: #6a7b92;
-}
-
-.mail-compose-field {
-    margin-bottom: 18px;
-}
-
-.mail-detail {
-    max-width: 850px;
-    margin: auto;
-}
-
-.mail-body {
-    padding: 25px 0;
-
-    line-height: 2;
-    color: #65748a;
-    white-space: pre-wrap;
-    font-size: 13px;
-}
-
-/* =====================================================
-   17. ドライブアプリ
-===================================================== */
-
-.upload-zone {
-    padding: 35px 20px;
-
-    border: 2px dashed #b9cce8;
-    border-radius: 17px;
-
-    text-align: center;
-
-    background: #f7faff;
-
-    transition: 0.2s;
-
-    cursor: pointer;
-}
-
-.upload-zone:hover,
-.upload-zone.dragging {
-    background: #eaf2ff;
-    border-color: var(--main);
-}
-
-.upload-zone .material-symbols-rounded {
-    font-size: 42px;
-    color: #6e9ad4;
-}
-
-.upload-zone h3 {
-    margin: 9px 0;
-    font-size: 14px;
-}
-
-.upload-zone p {
-    color: var(--muted);
-    font-size: 11px;
-}
-
-.file-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.file-item {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-
-    padding: 13px 15px;
-
-    border: 1px solid #edf0f5;
-    border-radius: 11px;
-
-    background: white;
-}
-
-.file-icon {
-    width: 40px;
-    height: 40px;
-
-    flex-shrink: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 10px;
-
-    background: #eaf2ff;
-    color: #5988cb;
-}
-
-.file-name {
-    flex: 1;
-    min-width: 0;
-
-    font-size: 12px;
-    font-weight: 600;
-
-    overflow-wrap: anywhere;
-}
-
-.file-size {
-    font-size: 10px;
-    color: #96a2b2;
-    margin-top: 4px;
-}
-
-.file-actions {
-    display: flex;
-    gap: 4px;
-}
-
-/* =====================================================
-   18. 写真アプリ
-===================================================== */
-
-.photo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(155px,1fr));
-    gap: 16px;
-}
-
-.photo-card {
-    overflow: hidden;
-
-    border-radius: 14px;
-
-    background: white;
-    border: 1px solid #edf0f5;
-
-    cursor: pointer;
-
-    transition: 0.25s;
-}
-
-.photo-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow);
-}
-
-.photo-thumb {
-    width: 100%;
-    height: 155px;
-
-    display: block;
-
-    object-fit: cover;
-
-    background: #eef3fa;
-}
-
-.photo-info {
-    padding: 11px;
-
-    font-size: 11px;
-    color: #5e7089;
-
-    overflow-wrap: anywhere;
-}
-
-/* =====================================================
-   19. モーダル
-===================================================== */
-
-.modal {
-    display: none;
-
-    position: fixed;
-    inset: 0;
-
-    z-index: 300;
-
-    justify-content: center;
-    align-items: center;
-
-    padding: 20px;
-
-    background: rgba(25,40,65,0.35);
-
-    backdrop-filter: blur(7px);
-}
-
-.modal.active {
-    display: flex;
-}
-
-.modal-box {
-    width: min(500px,100%);
-
-    padding: 25px;
-
-    border-radius: 22px;
-
-    background: white;
-
-    box-shadow: 0 15px 60px rgba(0,0,0,0.2);
-}
-
-.modal-box h2 {
-    font-size: 18px;
-    margin-bottom: 15px;
-}
-
-.preview-image {
-    max-width: 85vw;
-    max-height: 78vh;
-
-    object-fit: contain;
-
-    border-radius: 12px;
-}
-
-/* =====================================================
-   20. トースト
-===================================================== */
-
-.toast {
-    position: fixed;
-
-    bottom: 25px;
-    left: 50%;
-
-    transform: translate(-50%,20px);
-
-    padding: 13px 22px;
-
-    border-radius: 30px;
-
-    color: white;
-    background: rgba(37,55,82,0.94);
-
-    font-size: 12px;
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    z-index: 500;
-
-    transition: 0.3s;
-}
-
-.toast.show {
-    opacity: 1;
-    transform: translate(-50%,0);
-}
-
-/* =====================================================
-   21. フッター
-===================================================== */
-
-footer {
-    padding: 28px;
-
-    text-align: center;
-
-    background: rgba(255,255,255,0.83);
-
-    backdrop-filter: blur(15px);
-
-    border-top: 1px solid white;
-
-    color: #8a99ad;
-    font-size: 11px;
-}
-
-/* =====================================================
-   22. レスポンシブ
-===================================================== */
-
-@media(max-width:750px) {
-
-    header {
-        padding: 0 12px;
-        height: 65px;
-    }
-
-    .header-left,
-    .header-right {
-        gap: 8px;
-    }
-
-    .assistant-trigger {
-        padding: 8px 11px;
-        font-size: 11px;
-    }
-
-    .assistant-trigger .material-symbols-rounded {
-        font-size: 19px;
-    }
-
-    .workspace {
-        inset: 75px 7px 8px;
-        border-radius: 17px;
-    }
-
-    .side-nav {
-        width: 65px;
-        padding: 15px 6px;
-    }
-
-    .side-nav-title {
-        display: none;
-    }
-
-    .app-nav {
-        justify-content: center;
-        padding: 12px 3px;
-    }
-
-    .app-nav span:last-child {
-        display: none;
-    }
-
-    .work-content {
-        padding: 14px;
-    }
-
-    .work-topbar {
-        min-height: 60px;
-        padding: 0 15px;
-    }
-
-    .mail-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .mail-sidebar {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-
-    .mail-item {
-        grid-template-columns: 1fr auto;
-    }
-
-    .mail-item > strong {
-        grid-column: 1 / -1;
-    }
-
-    .mail-date {
-        grid-column: 2;
-        grid-row: 1;
-    }
-
-    .buttons {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .glass-card {
-        padding: 35px 20px;
-    }
-}
-
-@media(max-width:420px) {
-
-    .header-right > a {
-        font-size: 11px;
-    }
-
-    .assistant-trigger {
-        gap: 4px;
-        padding: 7px 8px;
-    }
-
-    .brand-banner {
-        width: 85vw;
-    }
-
-    .mail-item {
-        grid-template-columns: 1fr;
-    }
-
-    .mail-date {
-        grid-column: 1;
-        grid-row: auto;
-        text-align: left;
-    }
-
-}
-
 @media(prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        scroll-behavior: auto !important;
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-    }
-
+  html { scroll-snap-type: none; }
+  .scroll-reveal { opacity: 1; transform: none; transition: none; }
+  .scroll-cue { animation: none; }
 }
 
 </style>
 </head>
-
 <body>
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
 <header>
-
-    <div class="header-left">
-
-        <!-- 疑似AIアシスタント -->
-
-        <button
-            class="assistant-trigger"
-            id="assistantToggle"
-            onclick="toggleAssistant(event)">
-
-            <span class="material-symbols-rounded">
-                auto_awesome
-            </span>
-
-            ユーゲン・ヨーソ
-
-        </button>
-
+  <div class="header-left">
+    <button class="assistant-trigger" id="assistantToggle" onclick="toggleAssistant(event)">
+      <span class="material-symbols-rounded">auto_awesome</span>
+      <span class="assistant-label">ユーゲン・ヨーソ</span>
+    </button>
+  </div>
+  <div class="header-right">
+    <a class="header-mail" href="#" onclick="openApp('mail');return false;">10<sup>100</sup>メール</a>
+    <button class="icon-button" id="appsButton" onclick="toggleApps(event)" title="アプリ一覧" aria-label="アプリ一覧">
+      <span class="material-symbols-rounded">apps</span>
+    </button>
+    <button class="account-button" id="accountButton" onclick="toggleAccount(event)" title="アカウント">
+      <img src="10100icon.jpg" alt="10^100 アカウントアイコン" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;material-symbols-rounded&quot;>person</span>'">
+    </button>
+    <div class="header-popup" id="appsPopup">
+      <button class="popup-item" onclick="openApp('search')"><span class="material-symbols-rounded">search</span>検索</button>
+      <button class="popup-item" onclick="openApp('mail')"><span class="material-symbols-rounded">mail</span>メール</button>
+      <button class="popup-item" onclick="openApp('drive')"><span class="material-symbols-rounded">cloud</span>ドライブ</button>
+      <button class="popup-item" onclick="openApp('photos')"><span class="material-symbols-rounded">photo_library</span>写真</button>
     </div>
-
-
-    <div class="header-right">
-
-        <a href="#"
-           onclick="openApp('mail');return false;">
-
-            10<sup>100</sup>メール
-
-        </a>
-
-        <!-- アプリ一覧 -->
-
-        <button
-            class="icon-button"
-            id="appsButton"
-            onclick="toggleApps(event)"
-            title="アプリ一覧">
-
-            <span class="material-symbols-rounded">
-                apps
-            </span>
-
-        </button>
-
-        <!-- アカウント -->
-
-        <div
-            class="account"
-            id="accountButton"
-            onclick="toggleAccount(event)">
-
-            <img
-                src="10100icon.jpg"
-                alt="10^100アカウント">
-
+    <div class="header-popup account-popup" id="accountPopup">
+      <div>
+        <img src="10100icon.jpg" alt="アカウント" onerror="this.src='https://www.gravatar.com/avatar/?d=identicon&s=140'">
+        <h3 id="headerAccountName">10^100 アカウント</h3>
+        <p class="account-email" id="headerAccountEmail">アカウント未選択</p>
+        <div class="popup-actions">
+          <button class="secondary-button" onclick="openAccountManager()">アカウント切替</button>
+          <button class="secondary-button" onclick="openProfileEditor()">プロフィール</button>
+          <button class="secondary-button" onclick="logout()">ログアウト</button>
         </div>
-
-
-        <!-- アプリ一覧メニュー -->
-
-        <div class="header-popup" id="appsPopup">
-
-            <button class="popup-item"
-                onclick="openApp('search')">
-
-                <span class="material-symbols-rounded">search</span>
-                検索
-
-            </button>
-
-            <button class="popup-item"
-                onclick="openApp('mail')">
-
-                <span class="material-symbols-rounded">mail</span>
-                メール
-
-            </button>
-
-            <button class="popup-item"
-                onclick="openApp('drive')">
-
-                <span class="material-symbols-rounded">cloud</span>
-                ドライブ
-
-            </button>
-
-            <button class="popup-item"
-                onclick="openApp('photos')">
-
-                <span class="material-symbols-rounded">photo_library</span>
-                写真
-
-            </button>
-
-        </div>
-
-
-        <!-- アカウントメニュー -->
-
-        <div class="header-popup account-popup"
-             id="accountPopup">
-
-            <div>
-
-                <img src="10100icon.jpg" alt="アカウント">
-
-                <h3>10<sup>100</sup> アカウント</h3>
-
-                <p style="font-size:11px;color:#8290a3;margin-top:7px">
-                    10^100へようこそ
-                </p>
-
-                <button
-                    class="secondary-button"
-                    style="margin-top:15px"
-                    onclick="showToast('アカウント設定は準備中です')">
-
-                    アカウント設定
-
-                </button>
-
-            </div>
-
-        </div>
-
+      </div>
     </div>
-
+  </div>
 </header>
 
-
-<!-- =====================================================
-     AI ASSISTANT
-===================================================== -->
-
+<!-- Assistant -->
 <aside class="assistant-panel" id="assistantPanel">
-
-    <div class="assistant-header">
-
-        <div class="assistant-title">
-
-            <div class="assistant-avatar">
-                <span class="material-symbols-rounded">
-                    auto_awesome
-                </span>
-            </div>
-
-            <div>
-                <strong>ユーゲン・ヨーソ</strong>
-
-                <p style="font-size:10px;color:#8998ac">
-                    10^100 アシスタント
-                </p>
-            </div>
-
-        </div>
-
-        <button class="icon-button"
-                onclick="closeAssistant()">
-
-            <span class="material-symbols-rounded">
-                close
-            </span>
-
-        </button>
-
+  <div class="assistant-header">
+    <div class="assistant-title">
+      <div class="assistant-avatar"><span class="material-symbols-rounded">auto_awesome</span></div>
+      <div><strong>ユーゲン・ヨーソ</strong><p class="assistant-subtitle">10^100 アシスタント</p></div>
     </div>
+    <button class="icon-button" onclick="closeAssistant()" aria-label="閉じる"><span class="material-symbols-rounded">close</span></button>
+  </div>
+  <div class="assistant-description">疑似AIアシスタント · ローカルモード</div>
+  <div class="assistant-messages" id="assistantMessages">
+    <div class="chat-message bot">こんにちは。私はユーゲン・ヨーソです。
 
-
-    <div class="assistant-description">
-        疑似AIアシスタント · ローカルモード
-    </div>
-
-
-    <div class="assistant-messages" id="assistantMessages">
-
-        <div class="chat-message bot">
-            こんにちは。私はユーゲン・ヨーソです。
-
-            10^100のアプリケーションや検索について、
-            お手伝いします。
-
-            今日はどのようなことをお探しですか？
-        </div>
-
-    </div>
-
-
-    <div class="assistant-quick">
-
-        <button class="quick-button"
-            onclick="askAssistant('検索について教えて')">
-            検索について
-        </button>
-
-        <button class="quick-button"
-            onclick="askAssistant('メールを開いて')">
-            メールを開く
-        </button>
-
-        <button class="quick-button"
-            onclick="askAssistant('ドライブを開いて')">
-            ドライブを開く
-        </button>
-
-    </div>
-
-
-    <form class="assistant-form"
-          onsubmit="sendAssistant(event)">
-
-        <input
-            id="assistantInput"
-            type="text"
-            placeholder="メッセージを入力..."
-            autocomplete="off">
-
-        <button type="submit">
-
-            <span class="material-symbols-rounded">
-                send
-            </span>
-
-        </button>
-
-    </form>
-
+10^100の操作や各アプリについてご案内します。何をお手伝いしましょうか？</div>
+  </div>
+  <div class="assistant-quick">
+    <button class="quick-button" onclick="askAssistant('検索を開いて')">検索を開く</button>
+    <button class="quick-button" onclick="askAssistant('メールを開いて')">メールを開く</button>
+    <button class="quick-button" onclick="askAssistant('ドライブを開いて')">ドライブを開く</button>
+  </div>
+  <form class="assistant-form" onsubmit="sendAssistant(event)">
+    <input id="assistantInput" type="text" placeholder="メッセージを入力..." autocomplete="off">
+    <button type="submit" aria-label="送信"><span class="material-symbols-rounded">send</span></button>
+  </form>
 </aside>
 
-
-<!-- =====================================================
-     HOME PAGE
-===================================================== -->
-
+<!-- Home -->
 <div id="homePage">
+  <!-- Hero 1: logo left, message right (reference image 1) -->
+  <section class="hero-panel hero-panel-one scroll-section" id="heroIntro" aria-label="10^100 トップ">
+    <div class="hero-layout">
+      <div class="hero-brand scroll-reveal is-visible">
+        <img src="10100_Banner.png" class="hero-banner" alt="10^100" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div class="hero-logo-fallback" style="display:none">10<sup>100</sup></div>
+      </div>
+      <div class="hero-copy hero-copy-right scroll-reveal is-visible">
+        <h1>想像を超える、その先へ。</h1>
+        <p>あなたの情報とアプリケーションを、10<sup>100</sup>の共通アカウントでまとめて管理します。</p>
+      </div>
+    </div>
+    <div class="scroll-cue" aria-hidden="true">
+      <span>SCROLL</span>
+      <span class="material-symbols-rounded">keyboard_arrow_down</span>
+    </div>
+  </section>
 
-    <main>
-
-        <!-- 10^100 ロゴ画像 -->
-
-        <img
-            src="10100_Banner.png"
-            class="brand-banner"
-            id="brandBanner"
-            alt="10^100"
-            onerror="
-                this.style.display='none';
-                document.getElementById('logoFallback').style.display='block';
-            ">
-
-        <!-- PNGが存在しない場合 -->
-
-        <div class="logo-fallback"
-             id="logoFallback"
-             style="display:none">
-
-            10<sup>100</sup>
-
+  <!-- Hero 2: welcome copy left, logo right (reference image 2) -->
+  <section class="hero-panel hero-panel-two scroll-section" id="heroWelcome" aria-label="10^100 へようこそ">
+    <div class="hero-action-row scroll-reveal">
+      <button class="hero-action-button" onclick="openHomeSearch(false)">10<sup>100</sup>検索</button>
+      <button class="hero-action-button" onclick="openHomeSearch(true)">おすすめのページへ</button>
+    </div>
+    <div class="hero-layout hero-layout-welcome">
+      <div class="hero-copy hero-copy-left scroll-reveal">
+        <h2>10<sup>100</sup>へようこそ。</h2>
+        <p class="welcome-lead">検索、メール、ファイル管理、写真。</p>
+        <p>日々のデジタル体験をひとつの場所に。</p>
+        <div class="welcome-links">
+          <button onclick="openApp('search')"><span class="material-symbols-rounded">search</span>検索</button>
+          <button onclick="openApp('mail')"><span class="material-symbols-rounded">mail</span>メール</button>
+          <button onclick="openApp('drive')"><span class="material-symbols-rounded">cloud</span>ドライブ</button>
+          <button onclick="openApp('photos')"><span class="material-symbols-rounded">photo_library</span>写真</button>
         </div>
+      </div>
+      <div class="hero-brand hero-brand-right scroll-reveal">
+        <img src="10100_Banner.png" class="hero-banner hero-banner-large" alt="10^100" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <div class="hero-logo-fallback" style="display:none">10<sup>100</sup></div>
+      </div>
+    </div>
+  </section>
 
-
-        <div class="subtitle">
-            無限の可能性を検索する
-        </div>
-
-
-        <!-- 検索 -->
-
-        <form
-            class="search-container"
-            onsubmit="homeSearch(event)">
-
-            <input
-                id="homeSearchInput"
-                type="text"
-                placeholder="10^100 で検索..."
-                autocomplete="off">
-
-            <button class="search-button"
-                    type="submit"
-                    aria-label="検索">
-
-                <span class="material-symbols-rounded">
-                    search
-                </span>
-
-            </button>
-
-        </form>
-
-
-        <div class="buttons">
-
-            <button class="glass-button"
-                    onclick="homeSearch()">
-
-                10<sup>100</sup> 検索
-
-            </button>
-
-            <button class="glass-button"
-                    onclick="luckySearch()">
-
-                おすすめのページへ
-
-            </button>
-
-        </div>
-
-    </main>
-
-
-    <!-- 下部コンテンツ -->
-
-    <section class="home-section">
-
-        <div class="glass-card reveal">
-
-            <h1>10<sup>100</sup> へようこそ</h1>
-
-            <p>
-                あらゆる情報へのアクセスを、ここから始めましょう。
-                <br>
-                検索、メール、ファイル管理、写真を一つの場所に。
-            </p>
-
-        </div>
-
-    </section>
-
-
-    <section class="home-section">
-
-        <div class="glass-card reveal">
-
-            <h1>想像を超える、その先へ。</h1>
-
-            <p>
-                10<sup>100</sup> は、無限の可能性を象徴する
-                新しいデジタルポータルです。
-            </p>
-
-        </div>
-
-    </section>
-
-
-    <footer>
-        © 2026 10^100 Project
-    </footer>
-
+  <footer>© 2026 10^100 Project</footer>
 </div>
 
+<!-- Home search dialog -->
+<div class="modal" id="homeSearchModal" role="dialog" aria-modal="true" aria-labelledby="homeSearchTitle">
+  <div class="modal-box">
+    <h2 id="homeSearchTitle">10<sup>100</sup>検索</h2>
+    <p class="modal-description">検索したいキーワードを入力してください。</p>
+    <form onsubmit="submitHomeSearch(event)">
+      <div class="form-field">
+        <label for="homeQuery">検索キーワード</label>
+        <input class="app-input" id="homeQuery" type="search" placeholder="例：宇宙の大きさ" autocomplete="off" required>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="secondary-button" onclick="closeHomeSearch()">キャンセル</button>
+        <button type="submit" class="primary-button">検索する</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-<!-- =====================================================
-     APPLICATION WORKSPACE
-===================================================== -->
-
+<!-- Workspace -->
 <section class="workspace" id="workspace">
-
-    <!-- サイドバー -->
-
-    <aside class="side-nav">
-
-        <div class="side-nav-title">
-            10^100 APPS
-        </div>
-
-        <button class="app-nav"
-                data-navapp="home"
-                onclick="openApp('home')">
-
-            <span class="material-symbols-rounded">home</span>
-            <span>ホーム</span>
-
-        </button>
-
-
-        <button class="app-nav"
-                data-navapp="search"
-                onclick="openApp('search')">
-
-            <span class="material-symbols-rounded">search</span>
-            <span>検索</span>
-
-        </button>
-
-
-        <button class="app-nav"
-                data-navapp="mail"
-                onclick="openApp('mail')">
-
-            <span class="material-symbols-rounded">mail</span>
-            <span>メール</span>
-
-        </button>
-
-
-        <button class="app-nav"
-                data-navapp="drive"
-                onclick="openApp('drive')">
-
-            <span class="material-symbols-rounded">cloud</span>
-            <span>ドライブ</span>
-
-        </button>
-
-
-        <button class="app-nav"
-                data-navapp="photos"
-                onclick="openApp('photos')">
-
-            <span class="material-symbols-rounded">photo_library</span>
-            <span>写真</span>
-
-        </button>
-
-    </aside>
-
-
-    <!-- アプリメイン -->
-
-    <div class="work-main">
-
-        <div class="work-topbar">
-
-            <h2 id="appTitle">検索</h2>
-
-            <button class="icon-button"
-                    onclick="openApp('home')"
-                    title="ホームへ戻る">
-
-                <span class="material-symbols-rounded">
-                    close
-                </span>
-
-            </button>
-
-        </div>
-
-
-        <div class="work-content" id="appContent">
-
-        </div>
-
+  <aside class="side-nav">
+    <div class="side-nav-title">10^100 APPS</div>
+    <button class="app-nav" data-navapp="home" onclick="openApp('home')"><span class="material-symbols-rounded">home</span><span>ホーム</span></button>
+    <button class="app-nav" data-navapp="search" onclick="openApp('search')"><span class="material-symbols-rounded">search</span><span>検索</span></button>
+    <button class="app-nav" data-navapp="mail" onclick="openApp('mail')"><span class="material-symbols-rounded">mail</span><span>メール</span></button>
+    <button class="app-nav" data-navapp="drive" onclick="openApp('drive')"><span class="material-symbols-rounded">cloud</span><span>ドライブ</span></button>
+    <button class="app-nav" data-navapp="photos" onclick="openApp('photos')"><span class="material-symbols-rounded">photo_library</span><span>写真</span></button>
+  </aside>
+  <div class="work-main">
+    <div class="work-topbar">
+      <div><h2 id="appTitle" style="display:inline">検索</h2><span class="account-context" id="appAccountContext"></span></div>
+      <button class="icon-button" onclick="openApp('home')" title="ホームへ戻る"><span class="material-symbols-rounded">close</span></button>
     </div>
-
+    <div class="work-content" id="appContent"></div>
+  </div>
 </section>
 
-
-<!-- =====================================================
-     PHOTO PREVIEW MODAL
-===================================================== -->
-
-<div class="modal" id="previewModal"
-     onclick="closePreview()">
-
-    <div style="text-align:center"
-         onclick="event.stopPropagation()">
-
-        <img
-            class="preview-image"
-            id="previewImage"
-            alt="写真プレビュー">
-
-        <br>
-
-        <button class="secondary-button"
-                style="margin-top:15px"
-                onclick="closePreview()">
-
-            閉じる
-
-        </button>
-
-    </div>
-
+<!-- Local account setup / switch / profile -->
+<div class="modal" id="accountModal" role="dialog" aria-modal="true" aria-labelledby="accountModalTitle">
+  <div class="modal-box">
+    <h2 id="accountModalTitle">10^100 アカウントを作成</h2>
+    <p class="modal-description" id="accountModalDescription">このブラウザ内で使うローカルアカウントを作成します。パスワードや決済情報は入力しません。</p>
+    <form id="accountForm" onsubmit="submitAccountForm(event)">
+      <div id="accountFormFields">
+        <div class="form-field"><label for="accountNameInput">表示名</label><input class="app-input" id="accountNameInput" maxlength="40" required placeholder="例：10^100ユーザー"></div>
+        <div class="form-field"><label for="accountEmailInput">メールアドレス（識別用）</label><input class="app-input" id="accountEmailInput" type="email" maxlength="120" required placeholder="you@example.com"></div>
+      </div>
+      <div id="accountList" class="account-list hidden"></div>
+      <div class="modal-actions">
+        <button type="button" class="secondary-button" id="accountCancelButton" onclick="closeAccountModal()">閉じる</button>
+        <button type="submit" class="primary-button" id="accountSubmitButton">作成して開始</button>
+      </div>
+    </form>
+    <p style="margin-top:17px;color:#9aa6b7;font-size:10px;line-height:1.7">注意：これはフロントエンドの試作用アカウントです。データはこのブラウザに保存され、他の端末とは同期されません。実サービスの認証にはサーバー側の認証基盤が必要です。</p>
+  </div>
 </div>
 
+<!-- Photo preview -->
+<div class="modal" id="previewModal" onclick="closePreview()">
+  <div style="text-align:center" onclick="event.stopPropagation()">
+    <img class="preview-image" id="previewImage" alt="写真プレビュー"><br>
+    <button class="secondary-button" style="margin-top:15px" onclick="closePreview()">閉じる</button>
+  </div>
+</div>
 
-<!-- =====================================================
-     TOAST
-===================================================== -->
-
-<div class="toast" id="toast"></div>
-
-
-
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-
 /* =====================================================
-   1. 基本変数
+   1. Shared account model (local prototype)
+   All app data is namespaced by the same local account ID.
 ===================================================== */
-
+const ACCOUNT_LIST_KEY = "10100:local:accounts";
+const ACTIVE_ACCOUNT_KEY = "10100:local:activeAccount";
+let currentUser = null;
+let accountModalMode = "create";
 let currentApp = "home";
-
 let currentMailFolder = "inbox";
-
 let toastTimer = null;
-
 let previewObjectURL = null;
-
 let photoObjectURLs = [];
+let databasePromise = null;
+let homeSearchLuckyMode = false;
+let scrollHapticsArmed = false;
+let activeScrollSection = "";
 
 const homePage = document.getElementById("homePage");
-
 const workspace = document.getElementById("workspace");
-
 const appContent = document.getElementById("appContent");
 
-
-/* =====================================================
-   2. 背景画像の自動選択
-===================================================== */
-
-const remoteBackground =
-"https://images.unsplash.com/photo-1706523869978-e084f4658729?auto=format&fit=crop&w=2400&q=85";
-
-const backgroundCandidates = [
-    "BG.png",
-    "BG_fallback.jpg",
-    remoteBackground
-];
-
-function loadBackground(index = 0) {
-
-    if (index >= backgroundCandidates.length) {
-
-        document.documentElement.style.setProperty(
-            "--page-bg",
-            "linear-gradient(135deg,#f5f9ff,#dceaff)"
-        );
-
-        return;
-
-    }
-
-    const source = backgroundCandidates[index];
-
-    const image = new Image();
-
-    image.onload = function() {
-
-        document.documentElement.style.setProperty(
-            "--page-bg",
-            `url("${source}")`
-        );
-
-        console.log("背景画像を読み込みました:", source);
-
-    };
-
-    image.onerror = function() {
-
-        console.warn("背景画像が見つかりません:", source);
-
-        loadBackground(index + 1);
-
-    };
-
-    image.src = source;
-
+function getAccounts() {
+  try {
+    const data = JSON.parse(localStorage.getItem(ACCOUNT_LIST_KEY) || "[]");
+    return Array.isArray(data) ? data : [];
+  } catch { return []; }
+}
+function saveAccounts(accounts) {
+  localStorage.setItem(ACCOUNT_LIST_KEY, JSON.stringify(accounts));
+}
+function userKey(scope) {
+  if (!currentUser) throw new Error("アカウントが選択されていません");
+  return `10100:user:${currentUser.id}:${scope}`;
+}
+function getUserData(scope, fallback = []) {
+  if (!currentUser) return fallback;
+  try {
+    const value = JSON.parse(localStorage.getItem(userKey(scope)) || "null");
+    return value === null ? fallback : value;
+  } catch { return fallback; }
+}
+function setUserData(scope, value) {
+  if (!currentUser) throw new Error("アカウントが選択されていません");
+  localStorage.setItem(userKey(scope), JSON.stringify(value));
+}
+function activateAccount(account) {
+  currentUser = account;
+  localStorage.setItem(ACTIVE_ACCOUNT_KEY, account.id);
+  updateAccountUI();
+  closeAccountModal();
+  if (currentApp !== "home") openApp(currentApp);
+  showToast(`「${account.displayName}」で利用中です`);
+}
+function updateAccountUI() {
+  const name = currentUser ? currentUser.displayName : "10^100 アカウント";
+  const email = currentUser ? currentUser.email : "アカウント未選択";
+  document.getElementById("headerAccountName").textContent = name;
+  document.getElementById("headerAccountEmail").textContent = email;
+  document.getElementById("appAccountContext").textContent = currentUser ? `利用中：${name}` : "";
+}
+function createLocalAccount(displayName, email) {
+  const accounts = getAccounts();
+  const normalizedEmail = email.trim().toLowerCase();
+  const existing = accounts.find(a => a.email.toLowerCase() === normalizedEmail);
+  if (existing) {
+    activateAccount(existing);
+    return;
+  }
+  const account = {
+    id: "u_" + (crypto.randomUUID ? crypto.randomUUID() : Date.now() + "_" + Math.random().toString(36).slice(2)),
+    displayName: displayName.trim(),
+    email: normalizedEmail,
+    createdAt: new Date().toISOString()
+  };
+  accounts.push(account);
+  saveAccounts(accounts);
+  activateAccount(account);
+}
+function showAccountModal(mode = "create") {
+  accountModalMode = mode;
+  const modal = document.getElementById("accountModal");
+  const title = document.getElementById("accountModalTitle");
+  const description = document.getElementById("accountModalDescription");
+  const fields = document.getElementById("accountFormFields");
+  const list = document.getElementById("accountList");
+  const submit = document.getElementById("accountSubmitButton");
+  const cancel = document.getElementById("accountCancelButton");
+  if (mode === "switch") {
+    title.textContent = "アカウントを切り替え";
+    description.textContent = "このブラウザに保存されているローカルアカウントを選択します。";
+    fields.classList.add("hidden");
+    list.classList.remove("hidden");
+    submit.classList.add("hidden");
+    cancel.textContent = "閉じる";
+    renderAccountChoices();
+  } else if (mode === "profile") {
+    title.textContent = "プロフィール";
+    description.textContent = "共通アカウントに表示する名前を変更します。";
+    fields.classList.remove("hidden");
+    list.classList.add("hidden");
+    submit.classList.remove("hidden");
+    submit.textContent = "変更を保存";
+    cancel.textContent = "キャンセル";
+    document.getElementById("accountNameInput").value = currentUser?.displayName || "";
+    document.getElementById("accountEmailInput").value = currentUser?.email || "";
+    document.getElementById("accountEmailInput").disabled = true;
+  } else {
+    title.textContent = "10^100 アカウントを作成";
+    description.textContent = "このブラウザ内で使うローカルアカウントを作成します。パスワードや決済情報は入力しません。";
+    fields.classList.remove("hidden");
+    list.classList.add("hidden");
+    submit.classList.remove("hidden");
+    submit.textContent = "作成して開始";
+    cancel.textContent = currentUser ? "閉じる" : "あとで";
+    document.getElementById("accountNameInput").value = "";
+    document.getElementById("accountEmailInput").value = "";
+    document.getElementById("accountEmailInput").disabled = false;
+  }
+  modal.classList.add("active");
+}
+function renderAccountChoices() {
+  const list = document.getElementById("accountList");
+  const accounts = getAccounts();
+  if (!accounts.length) {
+    list.innerHTML = '<div class="empty-state"><span class="material-symbols-rounded">person_off</span><p>登録済みのアカウントはありません。</p></div>';
+    return;
+  }
+  list.innerHTML = accounts.map(account => `
+    <button type="button" class="account-choice" data-account-id="${escapeHTML(account.id)}">
+      <img src="10100icon.jpg" alt="">
+      <span><strong>${escapeHTML(account.displayName)}</strong><small>${escapeHTML(account.email)}</small></span>
+    </button>`).join("");
+}
+document.getElementById("accountList").addEventListener("click", event => {
+  const button = event.target.closest("[data-account-id]");
+  if (!button) return;
+  const account = getAccounts().find(a => a.id === button.dataset.accountId);
+  if (account) { haptic(); activateAccount(account); }
+});
+function submitAccountForm(event) {
+  event.preventDefault();
+  const nameInput = document.getElementById("accountNameInput");
+  const emailInput = document.getElementById("accountEmailInput");
+  const displayName = nameInput.value.trim();
+  const email = emailInput.value.trim();
+  if (accountModalMode === "profile") {
+    if (!displayName) { showToast("表示名を入力してください"); return; }
+    const accounts = getAccounts();
+    const index = accounts.findIndex(a => a.id === currentUser.id);
+    if (index < 0) return;
+    accounts[index].displayName = displayName;
+    saveAccounts(accounts);
+    currentUser = accounts[index];
+    updateAccountUI();
+    closeAccountModal();
+    showToast("プロフィールを更新しました");
+    return;
+  }
+  if (!displayName || !emailInput.checkValidity()) {
+    showToast("表示名と有効なメールアドレスを入力してください");
+    return;
+  }
+  haptic();
+  createLocalAccount(displayName, email);
+}
+function closeAccountModal() {
+  document.getElementById("accountModal").classList.remove("active");
+}
+function openAccountManager() { closeHeaderPopups(); showAccountModal("switch"); }
+function openProfileEditor() { closeHeaderPopups(); if (currentUser) showAccountModal("profile"); }
+function logout() {
+  closeHeaderPopups();
+  currentUser = null;
+  localStorage.removeItem(ACTIVE_ACCOUNT_KEY);
+  updateAccountUI();
+  if (currentApp !== "home") openApp("home");
+  showAccountModal("create");
+}
+function restoreAccount() {
+  const id = localStorage.getItem(ACTIVE_ACCOUNT_KEY);
+  const account = getAccounts().find(a => a.id === id);
+  if (account) {
+    currentUser = account;
+    updateAccountUI();
+  } else {
+    updateAccountUI();
+    showAccountModal("create");
+  }
 }
 
-loadBackground();
-
-
 /* =====================================================
-   3. ハプティクス
+   2. Small utilities
 ===================================================== */
-
 function haptic(duration = 18) {
-
-    if (navigator.vibrate) {
-
-        navigator.vibrate(duration);
-
+  try {
+    if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
+      navigator.vibrate(duration);
     }
-
+  } catch (error) {
+    // Vibration is optional; unsupported browsers continue without feedback.
+  }
 }
-
-
-/* =====================================================
-   4. トースト通知
-===================================================== */
-
 function showToast(message) {
-
-    const toast = document.getElementById("toast");
-
-    toast.textContent = message;
-
-    toast.classList.add("show");
-
-    clearTimeout(toastTimer);
-
-    toastTimer = setTimeout(() => {
-
-        toast.classList.remove("show");
-
-    }, 2600);
-
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
 }
-
-
-/* =====================================================
-   5. HTMLエスケープ
-===================================================== */
-
 function escapeHTML(value) {
-
-    return String(value ?? "").replace(
-        /[&<>"']/g,
-        char => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#039;"
-        })[char]
-    );
-
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+  })[char]);
 }
-
-
-/* =====================================================
-   6. ヘッダーポップアップ
-===================================================== */
-
 function closeHeaderPopups() {
-
-    document.getElementById("appsPopup")
-        .classList.remove("active");
-
-    document.getElementById("accountPopup")
-        .classList.remove("active");
-
+  document.getElementById("appsPopup").classList.remove("active");
+  document.getElementById("accountPopup").classList.remove("active");
 }
-
-
 function toggleApps(event) {
-
-    event.stopPropagation();
-
-    haptic();
-
-    const popup = document.getElementById("appsPopup");
-
-    const wasOpen = popup.classList.contains("active");
-
-    closeHeaderPopups();
-
-    if (!wasOpen) {
-
-        popup.classList.add("active");
-
-    }
-
+  event.stopPropagation(); haptic();
+  const popup = document.getElementById("appsPopup");
+  const wasOpen = popup.classList.contains("active");
+  closeHeaderPopups();
+  if (!wasOpen) popup.classList.add("active");
 }
-
-
 function toggleAccount(event) {
-
-    event.stopPropagation();
-
-    haptic();
-
-    const popup = document.getElementById("accountPopup");
-
-    const wasOpen = popup.classList.contains("active");
-
-    closeHeaderPopups();
-
-    if (!wasOpen) {
-
-        popup.classList.add("active");
-
-    }
-
+  event.stopPropagation(); haptic();
+  const popup = document.getElementById("accountPopup");
+  const wasOpen = popup.classList.contains("active");
+  closeHeaderPopups();
+  if (!wasOpen) popup.classList.add("active");
 }
-
-
 document.addEventListener("click", event => {
-
-    const appsPopup = document.getElementById("appsPopup");
-
-    const accountPopup = document.getElementById("accountPopup");
-
-    const appsButton = document.getElementById("appsButton");
-
-    const accountButton = document.getElementById("accountButton");
-
-    if (
-        !appsPopup.contains(event.target) &&
-        !accountPopup.contains(event.target) &&
-        !appsButton.contains(event.target) &&
-        !accountButton.contains(event.target)
-    ) {
-
-        closeHeaderPopups();
-
-    }
-
+  const ids = ["appsPopup", "accountPopup", "appsButton", "accountButton"];
+  if (ids.every(id => !document.getElementById(id).contains(event.target))) closeHeaderPopups();
 });
 
+/* =====================================================
+   3. Background image loading
+   Priority: BG.png -> BG_fallback.jpg -> remote Unsplash -> gradient
+===================================================== */
+const remoteBackground = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2400&q=85";
+function loadBackground(candidates, index = 0) {
+  if (index >= candidates.length) {
+    document.documentElement.style.setProperty("--page-bg", "linear-gradient(135deg,#f5f9ff,#dceaff)");
+    return;
+  }
+  const source = candidates[index];
+  const image = new Image();
+  image.onload = () => document.documentElement.style.setProperty("--page-bg", `url("${source}")`);
+  image.onerror = () => loadBackground(candidates, index + 1);
+  image.src = source;
+}
+loadBackground(["BG.png", "BG_fallback.jpg", remoteBackground]);
 
 /* =====================================================
-   7. アプリ画面切り替え
+   4. App navigation
 ===================================================== */
-
 function openApp(app) {
-
-    haptic();
-
-    closeHeaderPopups();
-
-    closeAssistant();
-
+  haptic(); closeHeaderPopups(); closeAssistant();
+  if (app !== "home" && !currentUser) {
     currentApp = app;
-
-    if (app === "home") {
-
-        workspace.classList.remove("active");
-
-        homePage.style.display = "block";
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
-        return;
-
-    }
-
-    homePage.style.display = "none";
-
-    workspace.classList.add("active");
-
-
-    const titles = {
-        search: "10^100 検索",
-        mail: "10^100 メール",
-        drive: "10^100 ドライブ",
-        photos: "10^100 写真"
-    };
-
-    document.getElementById("appTitle").textContent =
-        titles[app] || "10^100";
-
-
-    document.querySelectorAll("[data-navapp]").forEach(button => {
-
-        button.classList.toggle(
-            "active",
-            button.dataset.navapp === app
-        );
-
-    });
-
-
-    switch (app) {
-
-        case "search":
-            renderSearchApp();
-            break;
-
-        case "mail":
-            renderMailApp("inbox");
-            break;
-
-        case "drive":
-            renderDriveApp();
-            break;
-
-        case "photos":
-            renderPhotosApp();
-            break;
-
-    }
-
+    showAccountModal("create");
+    showToast("先に10^100アカウントを作成してください");
+    return;
+  }
+  currentApp = app;
+  if (app === "home") {
+    workspace.classList.remove("active");
+    homePage.style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+  homePage.style.display = "none";
+  workspace.classList.add("active");
+  const titles = { search: "10^100 検索", mail: "10^100 メール", drive: "10^100 ドライブ", photos: "10^100 写真" };
+  document.getElementById("appTitle").textContent = titles[app] || "10^100";
+  document.getElementById("appAccountContext").textContent = `利用中：${currentUser.displayName}`;
+  document.querySelectorAll("[data-navapp]").forEach(button => button.classList.toggle("active", button.dataset.navapp === app));
+  if (app === "search") renderSearchApp();
+  if (app === "mail") renderMailApp("inbox");
+  if (app === "drive") renderDriveApp();
+  if (app === "photos") renderPhotosApp();
 }
-
 
 /* =====================================================
-   8. ホーム検索
+   Home search dialog
 ===================================================== */
-
-function homeSearch(event) {
-
-    if (event) event.preventDefault();
-
-    haptic();
-
-    const query = document.getElementById(
-        "homeSearchInput"
-    ).value.trim();
-
-    if (!query) {
-
-        showToast("検索キーワードを入力してください");
-
-        return;
-
-    }
-
-    saveSearchHistory(query);
-
-    window.open(
-        "https://www.google.com/search?q=" +
-        encodeURIComponent(query),
-        "_blank",
-        "noopener,noreferrer"
-    );
-
+function openHomeSearch(lucky = false) {
+  homeSearchLuckyMode = Boolean(lucky);
+  document.getElementById("homeSearchTitle").textContent = lucky ? "おすすめのページへ" : "10^100検索";
+  document.getElementById("homeQuery").value = "";
+  document.getElementById("homeSearchModal").classList.add("active");
+  haptic();
+  setTimeout(() => document.getElementById("homeQuery").focus(), 80);
 }
-
-
-function luckySearch() {
-
-    haptic();
-
-    const query = document.getElementById(
-        "homeSearchInput"
-    ).value.trim();
-
-    if (!query) {
-
-        showToast("検索キーワードを入力してください");
-
-        return;
-
-    }
-
-    saveSearchHistory(query);
-
-    window.open(
-        "https://www.google.com/search?q=" +
-        encodeURIComponent(query) +
-        "&btnI=1",
-        "_blank",
-        "noopener,noreferrer"
-    );
-
+function closeHomeSearch() {
+  document.getElementById("homeSearchModal").classList.remove("active");
 }
-
+function submitHomeSearch(event) {
+  event.preventDefault();
+  const query = document.getElementById("homeQuery").value.trim();
+  if (!query) return;
+  closeHomeSearch();
+  runGoogleSearch(query, homeSearchLuckyMode);
+}
 
 /* =====================================================
-   9. 検索履歴
+   5. Search app (account-specific history)
 ===================================================== */
-
-function getSearchHistory() {
-
-    try {
-
-        return JSON.parse(
-            localStorage.getItem("10100_search_history") || "[]"
-        );
-
-    } catch {
-
-        return [];
-
-    }
-
-}
-
-
+function getSearchHistory() { return getUserData("search-history", []); }
 function saveSearchHistory(query) {
-
-    let history = getSearchHistory();
-
-    history = [
-        query,
-        ...history.filter(item => item !== query)
-    ].slice(0, 10);
-
-    localStorage.setItem(
-        "10100_search_history",
-        JSON.stringify(history)
-    );
-
+  const history = [query, ...getSearchHistory().filter(item => item !== query)].slice(0, 12);
+  setUserData("search-history", history);
 }
-
-
-/* =====================================================
-   10. 検索アプリ
-===================================================== */
-
+function runGoogleSearch(query, lucky = false) {
+  const value = String(query || "").trim();
+  if (!value) { showToast("検索キーワードを入力してください"); return; }
+  saveSearchHistory(value); haptic();
+  const suffix = lucky ? "&btnI=1" : "";
+  window.open("https://www.google.com/search?q=" + encodeURIComponent(value) + suffix, "_blank", "noopener,noreferrer");
+}
+function homeSearch(event) {
+  if (event) event.preventDefault();
+  const input = document.getElementById("homeSearchInput");
+  if (input && input.value.trim()) runGoogleSearch(input.value);
+  else openHomeSearch(false);
+}
+function luckySearch() {
+  const input = document.getElementById("homeSearchInput");
+  if (input && input.value.trim()) runGoogleSearch(input.value, true);
+  else openHomeSearch(true);
+}
 function renderSearchApp() {
-
-    const history = getSearchHistory();
-
-    appContent.innerHTML = `
-
-        <div class="search-app">
-
-            <div class="app-heading">
-                <h2>10^100 検索</h2>
-                <p>インターネット上の情報を検索します。</p>
-            </div>
-
-            <form class="app-search-box"
-                  onsubmit="runWorkspaceSearch(event)">
-
-                <input
-                    id="workspaceSearchInput"
-                    placeholder="検索したい内容を入力..."
-                    autocomplete="off">
-
-                <button class="primary-button" type="submit">
-                    <span class="material-symbols-rounded">
-                        search
-                    </span>
-                    検索
-                </button>
-
-            </form>
-
-
-            <div class="app-card">
-
-                <div class="app-toolbar">
-
-                    <strong>最近の検索</strong>
-
-                    <button class="secondary-button"
-                            onclick="clearSearchHistory()">
-
-                        履歴を削除
-
-                    </button>
-
-                </div>
-
-                <div class="search-history">
-
-                    ${
-                        history.length
-                        ?
-                        history.map(item => `
-                            <button class="history-item"
-                                    data-search-history="${escapeHTML(item)}">
-
-                                <span>
-                                    <span class="material-symbols-rounded"
-                                          style="font-size:18px;margin-right:10px">
-                                        history
-                                    </span>
-
-                                    ${escapeHTML(item)}
-                                </span>
-
-                                <span class="material-symbols-rounded">
-                                    arrow_outward
-                                </span>
-
-                            </button>
-                        `).join("")
-                        :
-                        `
-                        <div class="empty-state">
-                            <span class="material-symbols-rounded">
-                                manage_search
-                            </span>
-                            <p>まだ検索履歴はありません。</p>
-                        </div>
-                        `
-                    }
-
-                </div>
-
-            </div>
-
-
-            <div class="search-result-info">
-
-                <strong>検索について</strong>
-
-                <p>
-                    現在の検索機能はGoogle検索を利用しています。
-                    検索ボタンを押すと新しいタブで検索結果が開きます。
-                </p>
-
-            </div>
-
-        </div>
-
-    `;
-
+  const history = getSearchHistory();
+  appContent.innerHTML = `
+    <div class="search-app">
+      <div class="app-heading"><h2>10^100 検索</h2><p>検索履歴は現在の10^100アカウントに紐付けて保存されます。</p></div>
+      <form class="app-search-box" onsubmit="runWorkspaceSearch(event)">
+        <input id="workspaceSearchInput" placeholder="検索したい内容を入力..." autocomplete="off">
+        <button class="primary-button" type="submit"><span class="material-symbols-rounded">search</span> 検索</button>
+      </form>
+      <div class="app-card">
+        <div class="app-toolbar"><strong>最近の検索</strong><button class="secondary-button" onclick="clearSearchHistory()">履歴を削除</button></div>
+        <div class="search-history">${history.length ? history.map(item => `
+          <button class="history-item" data-search-history="${escapeHTML(item)}">
+            <span><span class="material-symbols-rounded" style="font-size:18px;margin-right:10px">history</span>${escapeHTML(item)}</span>
+            <span class="material-symbols-rounded">arrow_outward</span>
+          </button>`).join("") : `<div class="empty-state"><span class="material-symbols-rounded">manage_search</span><p>まだ検索履歴はありません。</p></div>`}</div>
+      </div>
+      <div class="info-panel"><strong>検索について</strong><p>現在はGoogle検索を利用しています。検索結果は新しいタブで開きます。</p></div>
+    </div>`;
 }
-
-
 function runWorkspaceSearch(event) {
-
-    event.preventDefault();
-
-    const query = document.getElementById(
-        "workspaceSearchInput"
-    ).value.trim();
-
-    if (!query) return;
-
-    haptic();
-
-    saveSearchHistory(query);
-
-    window.open(
-        "https://www.google.com/search?q=" +
-        encodeURIComponent(query),
-        "_blank",
-        "noopener,noreferrer"
-    );
-
-    renderSearchApp();
-
+  event.preventDefault();
+  runGoogleSearch(document.getElementById("workspaceSearchInput").value);
+  renderSearchApp();
 }
-
-
 function clearSearchHistory() {
-
-    localStorage.removeItem("10100_search_history");
-
-    renderSearchApp();
-
-    showToast("検索履歴を削除しました");
-
+  setUserData("search-history", []); renderSearchApp(); showToast("このアカウントの検索履歴を削除しました");
 }
-
-
-function useSearchHistory(query) {
-
-    haptic();
-
-    saveSearchHistory(query);
-
-    window.open(
-        "https://www.google.com/search?q=" +
-        encodeURIComponent(query),
-        "_blank",
-        "noopener,noreferrer"
-    );
-
-}
-
-
 appContent.addEventListener("click", event => {
-
-    const historyButton = event.target.closest(
-        "[data-search-history]"
-    );
-
-    if (historyButton) {
-
-        useSearchHistory(historyButton.dataset.searchHistory);
-
-    }
-
+  const button = event.target.closest("[data-search-history]");
+  if (button) runGoogleSearch(button.dataset.searchHistory);
 });
 
-
 /* =====================================================
-   11. メール デモデータ
+   6. Mail app (per-account drafts and sent items)
 ===================================================== */
-
 const demoMails = [
-
-    {
-        id: "demo-1",
-        from: "10^100 運営",
-        subject: "10^100へようこそ！",
-        body: "10^100をご利用いただきありがとうございます。\n\nこのメールはサンプルメールです。\n\nこれからの検索体験をお楽しみください。",
-        date: "2026/11/05",
-        starred: true
-    },
-
-    {
-        id: "demo-2",
-        from: "ユーゲン・ヨーソ",
-        subject: "アシスタントからのお知らせ",
-        body: "こんにちは。\n\n10^100のアプリケーションについてお困りのことがあれば、アシスタントを利用してください。",
-        date: "2026/11/04",
-        starred: false
-    },
-
-    {
-        id: "demo-3",
-        from: "10^100 システム",
-        subject: "新機能のお知らせ",
-        body: "ドライブと写真の機能が利用できるようになりました。",
-        date: "2026/11/03",
-        starred: false
-    }
-
+  { id: "demo-1", from: "10^100 運営", subject: "10^100へようこそ！", body: "10^100をご利用いただきありがとうございます。\n\nこのメールはサンプルメールです。", date: "サンプル", starred: true },
+  { id: "demo-2", from: "ユーゲン・ヨーソ", subject: "アシスタントからのお知らせ", body: "こんにちは。\n\n各アプリの操作については、左上のアシスタントをご利用ください。", date: "サンプル", starred: false },
+  { id: "demo-3", from: "10^100 システム", subject: "共通アカウントのご案内", body: "検索履歴、下書き、ドライブ、写真は現在のローカルアカウントに紐付けて管理されます。", date: "サンプル", starred: false }
 ];
-
-
-function getLocalMailData(key) {
-
-    try {
-
-        return JSON.parse(localStorage.getItem(key) || "[]");
-
-    } catch {
-
-        return [];
-
-    }
-
-}
-
-
-/* =====================================================
-   12. メール画面
-===================================================== */
-
+function getDrafts() { return getUserData("mail-drafts", []); }
+function getSentMails() { return getUserData("mail-sent", []); }
 function renderMailApp(folder = "inbox") {
-
-    currentMailFolder = folder;
-
-    const drafts = getLocalMailData("10100_mail_drafts");
-
-    const sent = getLocalMailData("10100_mail_sent");
-
-    let mails = [];
-
-    let title = "受信トレイ";
-
-    if (folder === "inbox") {
-
-        mails = demoMails;
-
-        title = "受信トレイ";
-
-    }
-
-    if (folder === "starred") {
-
-        mails = demoMails.filter(mail => mail.starred);
-
-        title = "スター付き";
-
-    }
-
-    if (folder === "sent") {
-
-        mails = sent;
-
-        title = "送信済み";
-
-    }
-
-    if (folder === "drafts") {
-
-        mails = drafts;
-
-        title = "下書き";
-
-    }
-
-    appContent.innerHTML = `
-
-        <div class="mail-layout">
-
-            <aside class="mail-sidebar">
-
-                <button class="primary-button"
-                        style="margin-bottom:10px"
-                        onclick="openMailCompose()">
-
-                    <span class="material-symbols-rounded">
-                        edit
-                    </span>
-
-                    作成
-
-                </button>
-
-                <button class="mail-folder ${folder === "inbox" ? "active" : ""}"
-                        onclick="renderMailApp('inbox')">
-
-                    <span class="material-symbols-rounded">inbox</span>
-                    受信トレイ
-
-                </button>
-
-                <button class="mail-folder ${folder === "starred" ? "active" : ""}"
-                        onclick="renderMailApp('starred')">
-
-                    <span class="material-symbols-rounded">star</span>
-                    スター付き
-
-                </button>
-
-                <button class="mail-folder ${folder === "sent" ? "active" : ""}"
-                        onclick="renderMailApp('sent')">
-
-                    <span class="material-symbols-rounded">send</span>
-                    送信済み
-
-                </button>
-
-                <button class="mail-folder ${folder === "drafts" ? "active" : ""}"
-                        onclick="renderMailApp('drafts')">
-
-                    <span class="material-symbols-rounded">draft</span>
-                    下書き (${drafts.length})
-
-                </button>
-
-            </aside>
-
-
-            <div class="mail-main">
-
-                <div class="app-card">
-
-                    <div class="app-toolbar">
-
-                        <strong>${title}</strong>
-
-                        <button class="icon-button"
-                                onclick="renderMailApp('${folder}')"
-                                title="更新">
-
-                            <span class="material-symbols-rounded">
-                                refresh
-                            </span>
-
-                        </button>
-
-                    </div>
-
-
-                    <div class="mail-list">
-
-                        ${
-                            mails.length
-                            ?
-                            mails.map(mail => `
-
-                                <button class="mail-item"
-                                    onclick="openMailDetail('${escapeHTML(mail.id)}','${folder}')">
-
-                                    <strong>
-                                        ${escapeHTML(mail.from || "自分")}
-                                    </strong>
-
-                                    <span>
-                                        <span class="mail-item-title">
-                                            ${escapeHTML(mail.subject)}
-                                        </span>
-
-                                        <span class="mail-item-preview">
-                                            ${escapeHTML((mail.body || "").substring(0,65))}
-                                        </span>
-                                    </span>
-
-                                    <span class="mail-date">
-                                        ${escapeHTML(mail.date || "")}
-                                    </span>
-
-                                </button>
-
-                            `).join("")
-                            :
-                            `
-                            <div class="empty-state">
-
-                                <span class="material-symbols-rounded">
-                                    mail
-                                </span>
-
-                                <p>
-                                    メールはありません。
-                                </p>
-
-                            </div>
-                            `
-                        }
-
-                    </div>
-
-                </div>
-
-                <p style="font-size:10px;color:#99a5b5;margin-top:15px">
-                    ※ このメール機能はブラウザ内で動作するデモです。
-                </p>
-
-            </div>
-
+  currentMailFolder = folder;
+  const drafts = getDrafts(); const sent = getSentMails();
+  let mails = [], title = "受信トレイ";
+  if (folder === "inbox") mails = demoMails;
+  if (folder === "starred") { mails = demoMails.filter(mail => mail.starred); title = "スター付き"; }
+  if (folder === "sent") { mails = sent; title = "送信済み"; }
+  if (folder === "drafts") { mails = drafts; title = "下書き"; }
+  appContent.innerHTML = `
+    <div class="mail-layout">
+      <aside class="mail-sidebar">
+        <button class="primary-button" style="margin-bottom:9px" onclick="openMailCompose()"><span class="material-symbols-rounded">edit</span> 作成</button>
+        <button class="mail-folder ${folder === "inbox" ? "active" : ""}" onclick="renderMailApp('inbox')"><span class="material-symbols-rounded">inbox</span>受信トレイ</button>
+        <button class="mail-folder ${folder === "starred" ? "active" : ""}" onclick="renderMailApp('starred')"><span class="material-symbols-rounded">star</span>スター付き</button>
+        <button class="mail-folder ${folder === "sent" ? "active" : ""}" onclick="renderMailApp('sent')"><span class="material-symbols-rounded">send</span>送信済み</button>
+        <button class="mail-folder ${folder === "drafts" ? "active" : ""}" onclick="renderMailApp('drafts')"><span class="material-symbols-rounded">draft</span>下書き (${drafts.length})</button>
+      </aside>
+      <div class="mail-main"><div class="app-card">
+        <div class="app-toolbar"><strong>${title}</strong><button class="icon-button" onclick="renderMailApp('${folder}')" title="更新"><span class="material-symbols-rounded">refresh</span></button></div>
+        <div class="mail-list">${mails.length ? mails.map(mail => `
+          <button class="mail-item" data-mail-id="${escapeHTML(mail.id)}" data-mail-folder="${folder}">
+            <strong>${escapeHTML(mail.from || currentUser.displayName)}</strong>
+            <span><span class="mail-item-title">${escapeHTML(mail.subject || "(件名なし)")}</span><span class="mail-item-preview">${escapeHTML((mail.body || "").slice(0,70))}</span></span>
+            <span class="mail-date">${escapeHTML(mail.date || "")}</span>
+          </button>`).join("") : `<div class="empty-state"><span class="material-symbols-rounded">mail</span><p>メールはありません。</p></div>`}</div>
+      </div><p style="margin-top:13px;color:#99a5b5;font-size:10px">メールのデータは現在のローカルアカウントに保存されます。実際の送受信にはメールサーバーが必要です。</p></div>
+    </div>`;
+}
+function openMailCompose(draftId = null) {
+  const draft = draftId ? getDrafts().find(item => item.id === draftId) : null;
+  appContent.innerHTML = `
+    <div class="app-card mail-compose">
+      <div class="app-heading"><h2>新しいメール</h2><p>10^100 メール · ${escapeHTML(currentUser.email)}</p></div>
+      <form onsubmit="sendDemoMail(event)">
+        <div class="mail-compose-field"><label for="mailTo">宛先</label><input class="app-input" id="mailTo" type="email" required placeholder="example@example.com" value="${escapeHTML(draft?.to || "")}"></div>
+        <div class="mail-compose-field"><label for="mailSubject">件名</label><input class="app-input" id="mailSubject" placeholder="件名を入力" value="${escapeHTML(draft?.subject || "")}"></div>
+        <div class="mail-compose-field"><label for="mailBody">本文</label><textarea class="app-textarea" id="mailBody" placeholder="メッセージを入力...">${escapeHTML(draft?.body || "")}</textarea></div>
+        <div style="display:flex;gap:9px;flex-wrap:wrap">
+          <button type="submit" class="primary-button"><span class="material-symbols-rounded">send</span> 送信デモ</button>
+          <button type="button" class="secondary-button" onclick="saveMailDraft('${escapeHTML(draftId || "")}')"><span class="material-symbols-rounded">save</span> 下書き保存</button>
+          <button type="button" class="secondary-button" onclick="renderMailApp('inbox')">戻る</button>
         </div>
-
-    `;
-
+      </form>
+      <div class="info-panel">この画面では作成・下書き保存・送信済み一覧へのデモ登録ができます。実際のメール送信は行いません。</div>
+    </div>`;
 }
-
-
-/* =====================================================
-   13. メール作成
-===================================================== */
-
-function openMailCompose() {
-
-    haptic();
-
-    appContent.innerHTML = `
-
-        <div class="app-card mail-compose">
-
-            <div class="app-heading">
-
-                <h2>新しいメール</h2>
-
-                <p>10^100 メール</p>
-
-            </div>
-
-
-            <form onsubmit="sendDemoMail(event)">
-
-                <div class="mail-compose-field">
-
-                    <label>宛先</label>
-
-                    <input
-                        class="app-input"
-                        id="mailTo"
-                        type="email"
-                        placeholder="example@example.com"
-                        required>
-
-                </div>
-
-
-                <div class="mail-compose-field">
-
-                    <label>件名</label>
-
-                    <input
-                        class="app-input"
-                        id="mailSubject"
-                        placeholder="件名を入力">
-
-                </div>
-
-
-                <div class="mail-compose-field">
-
-                    <label>本文</label>
-
-                    <textarea
-                        class="app-textarea"
-                        id="mailBody"
-                        placeholder="メッセージを入力..."></textarea>
-
-                </div>
-
-
-                <div style="display:flex;gap:10px;flex-wrap:wrap">
-
-                    <button type="submit" class="primary-button">
-
-                        <span class="material-symbols-rounded">
-                            send
-                        </span>
-
-                        デモ送信
-
-                    </button>
-
-                    <button type="button"
-                            class="secondary-button"
-                            onclick="saveMailDraft()">
-
-                        <span class="material-symbols-rounded">
-                            save
-                        </span>
-
-                        下書き保存
-
-                    </button>
-
-                    <button type="button"
-                            class="secondary-button"
-                            onclick="renderMailApp('inbox')">
-
-                        戻る
-
-                    </button>
-
-                </div>
-
-            </form>
-
-
-            <div class="search-result-info">
-
-                この画面ではメールの作成・下書き保存を体験できます。
-                実際のメール送信にはメールサーバーが必要です。
-
-            </div>
-
-        </div>
-
-    `;
-
+function saveMailDraft(draftId = "") {
+  const to = document.getElementById("mailTo").value.trim();
+  const subject = document.getElementById("mailSubject").value.trim();
+  const body = document.getElementById("mailBody").value;
+  const drafts = getDrafts();
+  const record = { id: draftId || "draft-" + Date.now(), from: currentUser.displayName, to, subject: subject || "(件名なし)", body, date: new Date().toLocaleString("ja-JP") };
+  const index = drafts.findIndex(item => item.id === record.id);
+  if (index >= 0) drafts[index] = record; else drafts.unshift(record);
+  setUserData("mail-drafts", drafts); haptic(); showToast("このアカウントの下書きを保存しました"); renderMailApp("drafts");
 }
-
-
-/* =====================================================
-   14. メール下書き保存
-===================================================== */
-
-function saveMailDraft() {
-
-    const to = document.getElementById("mailTo").value;
-
-    const subject =
-        document.getElementById("mailSubject").value;
-
-    const body =
-        document.getElementById("mailBody").value;
-
-    const drafts = getLocalMailData("10100_mail_drafts");
-
-    drafts.unshift({
-
-        id: "draft-" + Date.now(),
-
-        from: "自分",
-
-        to,
-        subject: subject || "(件名なし)",
-        body,
-
-        date: new Date().toLocaleString("ja-JP")
-
-    });
-
-    localStorage.setItem(
-        "10100_mail_drafts",
-        JSON.stringify(drafts)
-    );
-
-    haptic();
-
-    showToast("下書きを保存しました");
-
-    renderMailApp("drafts");
-
-}
-
-
-/* =====================================================
-   15. メール送信デモ
-===================================================== */
-
 function sendDemoMail(event) {
-
-    event.preventDefault();
-
-    const to = document.getElementById("mailTo").value;
-
-    const subject =
-        document.getElementById("mailSubject").value;
-
-    const body =
-        document.getElementById("mailBody").value;
-
-    const sent = getLocalMailData("10100_mail_sent");
-
-    sent.unshift({
-
-        id: "sent-" + Date.now(),
-
-        from: "自分",
-
-        to,
-        subject: subject || "(件名なし)",
-        body,
-
-        date: new Date().toLocaleString("ja-JP")
-
-    });
-
-    localStorage.setItem(
-        "10100_mail_sent",
-        JSON.stringify(sent)
-    );
-
-    haptic();
-
-    showToast("送信デモを完了しました。実際の送信は行っていません。");
-
-    renderMailApp("sent");
-
+  event.preventDefault();
+  const to = document.getElementById("mailTo").value.trim();
+  const subject = document.getElementById("mailSubject").value.trim();
+  const body = document.getElementById("mailBody").value;
+  const sent = getSentMails();
+  sent.unshift({ id: "sent-" + Date.now(), from: currentUser.displayName, to, subject: subject || "(件名なし)", body, date: new Date().toLocaleString("ja-JP") });
+  setUserData("mail-sent", sent); haptic(); showToast("送信デモを保存しました（実際の送信は未実行）"); renderMailApp("sent");
 }
-
-
-/* =====================================================
-   16. メール詳細
-===================================================== */
-
 function openMailDetail(id, folder) {
-
-    let mail = null;
-
-    if (id.startsWith("demo-")) {
-
-        mail = demoMails.find(item => item.id === id);
-
-    }
-
-    if (id.startsWith("draft-")) {
-
-        mail = getLocalMailData(
-            "10100_mail_drafts"
-        ).find(item => item.id === id);
-
-    }
-
-    if (id.startsWith("sent-")) {
-
-        mail = getLocalMailData(
-            "10100_mail_sent"
-        ).find(item => item.id === id);
-
-    }
-
-    if (!mail) return;
-
-    appContent.innerHTML = `
-
-        <div class="app-card mail-detail">
-
-            <button class="secondary-button"
-                    onclick="renderMailApp('${folder}')">
-
-                <span class="material-symbols-rounded">
-                    arrow_back
-                </span>
-
-                戻る
-
-            </button>
-
-            <div style="margin-top:25px">
-
-                <h2>${escapeHTML(mail.subject)}</h2>
-
-                <p style="margin-top:12px;color:#8794a8;font-size:12px">
-                    ${escapeHTML(mail.from || "自分")}
-                </p>
-
-                <p style="margin-top:5px;color:#9ca8b8;font-size:11px">
-                    ${escapeHTML(mail.date || "")}
-                </p>
-
-                <div class="mail-body">
-                    ${escapeHTML(mail.body)}
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
-
+  let mail = null;
+  if (id.startsWith("demo-")) mail = demoMails.find(item => item.id === id);
+  if (id.startsWith("draft-")) mail = getDrafts().find(item => item.id === id);
+  if (id.startsWith("sent-")) mail = getSentMails().find(item => item.id === id);
+  if (!mail) return;
+  const isDraft = id.startsWith("draft-");
+  appContent.innerHTML = `
+    <div class="app-card mail-detail">
+      <button class="secondary-button" onclick="renderMailApp('${folder}')"><span class="material-symbols-rounded">arrow_back</span> 戻る</button>
+      <div style="margin-top:24px"><h2>${escapeHTML(mail.subject)}</h2><p style="margin-top:12px;color:#8794a8;font-size:12px">${escapeHTML(mail.from || "")}${mail.to ? " → " + escapeHTML(mail.to) : ""}</p><p style="margin-top:5px;color:#9ca8b8;font-size:11px">${escapeHTML(mail.date || "")}</p><div class="mail-body">${escapeHTML(mail.body)}</div>${isDraft ? `<button class="primary-button" onclick="openMailCompose('${escapeHTML(mail.id)}')">下書きを編集</button>` : ""}</div>
+    </div>`;
 }
-
+appContent.addEventListener("click", event => {
+  const button = event.target.closest("[data-mail-id]");
+  if (button) openMailDetail(button.dataset.mailId, button.dataset.mailFolder);
+});
 
 /* =====================================================
-   17. IndexedDB
-   ドライブ・写真のファイル保存
+   7. IndexedDB files, partitioned by shared account ID
 ===================================================== */
-
-let databasePromise = null;
-
 function openDatabase() {
-
-    if (databasePromise) return databasePromise;
-
-    databasePromise = new Promise((resolve,reject) => {
-
-        if (!window.indexedDB) {
-
-            reject(new Error("IndexedDBを利用できません"));
-
-            return;
-
-        }
-
-        const request = indexedDB.open(
-            "10100_Workspace",
-            1
-        );
-
-        request.onupgradeneeded = event => {
-
-            const database = event.target.result;
-
-            if (!database.objectStoreNames.contains("assets")) {
-
-                database.createObjectStore(
-                    "assets",
-                    { keyPath: "id" }
-                );
-
-            }
-
-        };
-
-        request.onsuccess = () => {
-
-            resolve(request.result);
-
-        };
-
-        request.onerror = () => {
-
-            reject(request.error);
-
-        };
-
-    });
-
-    return databasePromise;
-
-}
-
-
-/* =====================================================
-   18. ファイル保存
-===================================================== */
-
-async function saveAsset(file, category) {
-
-    const database = await openDatabase();
-
-    const id =
-        category + "-" +
-        Date.now() + "-" +
-        Math.random().toString(36).substring(2,8);
-
-    const record = {
-
-        id,
-
-        category,
-
-        name: file.name,
-
-        type: file.type,
-
-        size: file.size,
-
-        createdAt: Date.now(),
-
-        blob: file
-
+  if (databasePromise) return databasePromise;
+  databasePromise = new Promise((resolve, reject) => {
+    if (!window.indexedDB) { reject(new Error("IndexedDBを利用できません")); return; }
+    const request = indexedDB.open("10100_Workspace", 1);
+    request.onupgradeneeded = event => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains("assets")) db.createObjectStore("assets", { keyPath: "id" });
     };
-
-    return new Promise((resolve,reject) => {
-
-        const transaction = database.transaction(
-            ["assets"],
-            "readwrite"
-        );
-
-        transaction.objectStore("assets").put(record);
-
-        transaction.oncomplete = () => resolve(record);
-
-        transaction.onerror = () => reject(transaction.error);
-
-    });
-
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+  return databasePromise;
 }
-
-
-/* =====================================================
-   19. ファイル取得
-===================================================== */
-
+async function saveAsset(file, category) {
+  const db = await openDatabase();
+  const record = {
+    id: category + "-" + Date.now() + "-" + Math.random().toString(36).slice(2,8),
+    userId: currentUser.id, category, name: file.name, type: file.type,
+    size: file.size, createdAt: Date.now(), blob: file
+  };
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(["assets"], "readwrite");
+    tx.objectStore("assets").put(record);
+    tx.oncomplete = () => resolve(record);
+    tx.onerror = () => reject(tx.error);
+  });
+}
 async function getAssets(category) {
-
-    const database = await openDatabase();
-
-    return new Promise((resolve,reject) => {
-
-        const transaction = database.transaction(
-            ["assets"],
-            "readonly"
-        );
-
-        const request = transaction
-            .objectStore("assets")
-            .getAll();
-
-        request.onsuccess = () => {
-
-            const result = request.result
-                .filter(item => item.category === category)
-                .sort((a,b) => b.createdAt - a.createdAt);
-
-            resolve(result);
-
-        };
-
-        request.onerror = () => reject(request.error);
-
-    });
-
+  const db = await openDatabase();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(["assets"], "readonly");
+    const request = tx.objectStore("assets").getAll();
+    request.onsuccess = () => resolve(request.result.filter(item => item.userId === currentUser.id && item.category === category).sort((a,b) => b.createdAt-a.createdAt));
+    request.onerror = () => reject(request.error);
+  });
 }
-
-
-/* =====================================================
-   20. 単独ファイル取得
-===================================================== */
-
 async function getAsset(id) {
-
-    const database = await openDatabase();
-
-    return new Promise((resolve,reject) => {
-
-        const transaction = database.transaction(
-            ["assets"],
-            "readonly"
-        );
-
-        const request = transaction
-            .objectStore("assets")
-            .get(id);
-
-        request.onsuccess = () => resolve(request.result);
-
-        request.onerror = () => reject(request.error);
-
-    });
-
+  const db = await openDatabase();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(["assets"], "readonly");
+    const request = tx.objectStore("assets").get(id);
+    request.onsuccess = () => {
+      const item = request.result;
+      resolve(item && item.userId === currentUser.id ? item : null);
+    };
+    request.onerror = () => reject(request.error);
+  });
 }
-
-
-/* =====================================================
-   21. ファイル削除
-===================================================== */
-
 async function deleteAsset(id) {
-
-    const database = await openDatabase();
-
-    return new Promise((resolve,reject) => {
-
-        const transaction = database.transaction(
-            ["assets"],
-            "readwrite"
-        );
-
-        transaction.objectStore("assets").delete(id);
-
-        transaction.oncomplete = () => resolve();
-
-        transaction.onerror = () => reject(transaction.error);
-
-    });
-
+  const db = await openDatabase();
+  const existing = await getAsset(id);
+  if (!existing) throw new Error("対象のファイルがありません");
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(["assets"], "readwrite");
+    tx.objectStore("assets").delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
 }
-
-
-/* =====================================================
-   22. ファイルサイズ表示
-===================================================== */
-
 function formatFileSize(size) {
-
-    if (size < 1024) {
-
-        return size + " B";
-
-    }
-
-    if (size < 1024 * 1024) {
-
-        return (size / 1024).toFixed(1) + " KB";
-
-    }
-
-    if (size < 1024 * 1024 * 1024) {
-
-        return (size / 1024 / 1024).toFixed(2) + " MB";
-
-    }
-
-    return (size / 1024 / 1024 / 1024).toFixed(2) + " GB";
-
+  if (size < 1024) return size + " B";
+  if (size < 1024*1024) return (size/1024).toFixed(1) + " KB";
+  if (size < 1024*1024*1024) return (size/1024/1024).toFixed(2) + " MB";
+  return (size/1024/1024/1024).toFixed(2) + " GB";
 }
 
-
 /* =====================================================
-   23. ドライブアプリ
+   8. Drive
 ===================================================== */
-
 function renderDriveApp() {
-
-    appContent.innerHTML = `
-
-        <div class="app-heading">
-
-            <h2>10^100 ドライブ</h2>
-
-            <p>
-                ファイルやドキュメントをブラウザ内で管理します。
-            </p>
-
-        </div>
-
-
-        <div class="upload-zone"
-             onclick="document.getElementById('driveFiles').click()"
-             ondragover="event.preventDefault();this.classList.add('dragging')"
-             ondragleave="this.classList.remove('dragging')"
-             ondrop="dropFiles(event,'drive')">
-
-            <span class="material-symbols-rounded">
-                cloud_upload
-            </span>
-
-            <h3>ファイルをアップロード</h3>
-
-            <p>
-                クリックまたはドラッグ＆ドロップ
-            </p>
-
-        </div>
-
-
-        <input
-            type="file"
-            id="driveFiles"
-            multiple
-            hidden
-            onchange="uploadFiles(event,'drive')">
-
-
-        <div class="app-card" style="margin-top:25px">
-
-            <div class="app-toolbar">
-
-                <strong>マイドライブ</strong>
-
-                <button class="icon-button"
-                        onclick="refreshDriveApp()">
-
-                    <span class="material-symbols-rounded">
-                        refresh
-                    </span>
-
-                </button>
-
-            </div>
-
-            <div id="driveFileList" class="file-list">
-
-                <div class="empty-state">
-                    読み込み中...
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
-
-    refreshDriveApp();
-
+  appContent.innerHTML = `
+    <div class="app-heading"><h2>10^100 ドライブ</h2><p>${escapeHTML(currentUser.displayName)} のファイルをこのブラウザ内で管理します。</p></div>
+    <div class="upload-zone" onclick="document.getElementById('driveFiles').click()" ondragover="event.preventDefault();this.classList.add('dragging')" ondragleave="this.classList.remove('dragging')" ondrop="dropFiles(event,'drive')">
+      <span class="material-symbols-rounded">cloud_upload</span><h3>ファイルをアップロード</h3><p>クリックまたはドラッグ＆ドロップ</p>
+    </div>
+    <input type="file" id="driveFiles" multiple hidden onchange="uploadFiles(event,'drive')">
+    <div class="app-card" style="margin-top:24px"><div class="app-toolbar"><strong>マイドライブ</strong><button class="icon-button" onclick="refreshDriveApp()" title="更新"><span class="material-symbols-rounded">refresh</span></button></div><div id="driveFileList" class="file-list"><div class="empty-state">読み込み中...</div></div></div>
+  `;
+  refreshDriveApp();
 }
-
-
-/* =====================================================
-   24. ドライブ更新
-===================================================== */
-
 async function refreshDriveApp() {
-
-    const list = document.getElementById("driveFileList");
-
-    if (!list) return;
-
-    try {
-
-        const files = await getAssets("drive");
-
-        if (!list.isConnected) return;
-
-        if (!files.length) {
-
-            list.innerHTML = `
-
-                <div class="empty-state">
-
-                    <span class="material-symbols-rounded">
-                        folder_open
-                    </span>
-
-                    <p>
-                        ファイルはまだありません。<br>
-                        上部からファイルを追加してください。
-                    </p>
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-        list.innerHTML = files.map(file => `
-
-            <div class="file-item">
-
-                <div class="file-icon">
-
-                    <span class="material-symbols-rounded">
-                        description
-                    </span>
-
-                </div>
-
-                <div class="file-name">
-
-                    ${escapeHTML(file.name)}
-
-                    <div class="file-size">
-                        ${formatFileSize(file.size)}
-                    </div>
-
-                </div>
-
-                <div class="file-actions">
-
-                    <button class="icon-button"
-                            onclick="downloadAsset('${file.id}')"
-                            title="ダウンロード">
-
-                        <span class="material-symbols-rounded">
-                            download
-                        </span>
-
-                    </button>
-
-                    <button class="icon-button"
-                            onclick="removeAsset('${file.id}','drive')"
-                            title="削除">
-
-                        <span class="material-symbols-rounded">
-                            delete
-                        </span>
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        `).join("");
-
-    } catch(error) {
-
-        console.error(error);
-
-        list.innerHTML = `
-            <div class="empty-state">
-                ファイルを読み込めませんでした。
-            </div>
-        `;
-
-    }
-
+  const list = document.getElementById("driveFileList"); if (!list) return;
+  try {
+    const files = await getAssets("drive"); if (!list.isConnected) return;
+    if (!files.length) { list.innerHTML = `<div class="empty-state"><span class="material-symbols-rounded">folder_open</span><p>ファイルはまだありません。<br>上部からファイルを追加してください。</p></div>`; return; }
+    list.innerHTML = files.map(file => `
+      <div class="file-item"><div class="file-icon"><span class="material-symbols-rounded">description</span></div>
+      <div class="file-name">${escapeHTML(file.name)}<div class="file-size">${formatFileSize(file.size)}</div></div>
+      <div class="file-actions"><button class="icon-button" onclick="downloadAsset('${escapeHTML(file.id)}')" title="ダウンロード"><span class="material-symbols-rounded">download</span></button><button class="icon-button" onclick="removeAsset('${escapeHTML(file.id)}','drive')" title="削除"><span class="material-symbols-rounded">delete</span></button></div></div>`).join("");
+  } catch (error) { console.error(error); list.innerHTML = `<div class="empty-state">ファイルを読み込めませんでした。</div>`; }
 }
 
-
 /* =====================================================
-   25. 写真アプリ
+   9. Photos
 ===================================================== */
-
 function renderPhotosApp() {
-
-    appContent.innerHTML = `
-
-        <div class="app-heading">
-
-            <h2>10^100 写真</h2>
-
-            <p>
-                写真や画像をアップロードして管理できます。
-            </p>
-
-        </div>
-
-
-        <div class="upload-zone"
-             onclick="document.getElementById('photoFiles').click()"
-             ondragover="event.preventDefault();this.classList.add('dragging')"
-             ondragleave="this.classList.remove('dragging')"
-             ondrop="dropFiles(event,'photos')">
-
-            <span class="material-symbols-rounded">
-                add_photo_alternate
-            </span>
-
-            <h3>写真を追加</h3>
-
-            <p>
-                クリックまたはドラッグ＆ドロップ
-            </p>
-
-        </div>
-
-
-        <input
-            type="file"
-            id="photoFiles"
-            accept="image/*"
-            multiple
-            hidden
-            onchange="uploadFiles(event,'photos')">
-
-
-        <div class="app-card" style="margin-top:25px">
-
-            <div class="app-toolbar">
-
-                <strong>写真ライブラリ</strong>
-
-                <button class="icon-button"
-                        onclick="refreshPhotosApp()">
-
-                    <span class="material-symbols-rounded">
-                        refresh
-                    </span>
-
-                </button>
-
-            </div>
-
-            <div id="photoGrid" class="photo-grid">
-
-                <div class="empty-state">
-                    読み込み中...
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
-
-    refreshPhotosApp();
-
+  appContent.innerHTML = `
+    <div class="app-heading"><h2>10^100 写真</h2><p>${escapeHTML(currentUser.displayName)} の写真をこのブラウザ内で管理します。</p></div>
+    <div class="upload-zone" onclick="document.getElementById('photoFiles').click()" ondragover="event.preventDefault();this.classList.add('dragging')" ondragleave="this.classList.remove('dragging')" ondrop="dropFiles(event,'photos')">
+      <span class="material-symbols-rounded">add_photo_alternate</span><h3>写真を追加</h3><p>クリックまたはドラッグ＆ドロップ</p>
+    </div>
+    <input type="file" id="photoFiles" accept="image/*" multiple hidden onchange="uploadFiles(event,'photos')">
+    <div class="app-card" style="margin-top:24px"><div class="app-toolbar"><strong>写真ライブラリ</strong><button class="icon-button" onclick="refreshPhotosApp()" title="更新"><span class="material-symbols-rounded">refresh</span></button></div><div id="photoGrid" class="photo-grid"><div class="empty-state">読み込み中...</div></div></div>
+  `;
+  refreshPhotosApp();
 }
-
-
-/* =====================================================
-   26. 写真更新
-===================================================== */
-
 async function refreshPhotosApp() {
-
-    const grid = document.getElementById("photoGrid");
-
-    if (!grid) return;
-
-    photoObjectURLs.forEach(url => URL.revokeObjectURL(url));
-
-    photoObjectURLs = [];
-
-    try {
-
-        const photos = await getAssets("photos");
-
-        if (!grid.isConnected) return;
-
-        if (!photos.length) {
-
-            grid.innerHTML = `
-
-                <div class="empty-state"
-                     style="grid-column:1/-1">
-
-                    <span class="material-symbols-rounded">
-                        photo_library
-                    </span>
-
-                    <p>
-                        写真はまだありません。<br>
-                        上部から写真を追加してください。
-                    </p>
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-        grid.innerHTML = photos.map(photo => {
-
-            const url = URL.createObjectURL(photo.blob);
-
-            photoObjectURLs.push(url);
-
-            return `
-
-                <div class="photo-card"
-                     onclick="openPhotoPreview('${photo.id}')">
-
-                    <img
-                        class="photo-thumb"
-                        src="${url}"
-                        alt="${escapeHTML(photo.name)}">
-
-                    <div class="photo-info">
-
-                        ${escapeHTML(photo.name)}
-
-                        <div style="margin-top:5px;color:#9aa7b8">
-
-                            ${formatFileSize(photo.size)}
-
-                        </div>
-
-                        <button
-                            class="secondary-button"
-                            style="margin-top:10px"
-                            onclick="event.stopPropagation();removeAsset('${photo.id}','photos')">
-
-                            削除
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }).join("");
-
-    } catch(error) {
-
-        console.error(error);
-
-        grid.innerHTML = `
-            <div class="empty-state">
-                写真を読み込めませんでした。
-            </div>
-        `;
-
-    }
-
+  const grid = document.getElementById("photoGrid"); if (!grid) return;
+  photoObjectURLs.forEach(url => URL.revokeObjectURL(url)); photoObjectURLs = [];
+  try {
+    const photos = await getAssets("photos"); if (!grid.isConnected) return;
+    if (!photos.length) { grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><span class="material-symbols-rounded">photo_library</span><p>写真はまだありません。<br>上部から写真を追加してください。</p></div>`; return; }
+    grid.innerHTML = photos.map(photo => {
+      const url = URL.createObjectURL(photo.blob); photoObjectURLs.push(url);
+      return `<div class="photo-card" data-photo-id="${escapeHTML(photo.id)}"><img class="photo-thumb" src="${url}" alt="${escapeHTML(photo.name)}"><div class="photo-info">${escapeHTML(photo.name)}<div style="margin-top:5px;color:#9aa7b8">${formatFileSize(photo.size)}</div><button class="secondary-button" style="margin-top:9px" data-delete-photo="${escapeHTML(photo.id)}">削除</button></div></div>`;
+    }).join("");
+  } catch (error) { console.error(error); grid.innerHTML = `<div class="empty-state">写真を読み込めませんでした。</div>`; }
 }
-
-
-/* =====================================================
-   27. ファイルアップロード共通処理
-===================================================== */
-
+appContent.addEventListener("click", event => {
+  const deleteButton = event.target.closest("[data-delete-photo]");
+  if (deleteButton) { event.stopPropagation(); removeAsset(deleteButton.dataset.deletePhoto, "photos"); return; }
+  const card = event.target.closest("[data-photo-id]");
+  if (card) openPhotoPreview(card.dataset.photoId);
+});
 async function uploadFiles(event, category) {
-
-    const files = Array.from(event.target.files || []);
-
-    event.target.value = "";
-
-    await processFiles(files,category);
-
+  const files = Array.from(event.target.files || []); event.target.value = "";
+  await processFiles(files, category);
 }
-
-
-async function processFiles(files,category) {
-
-    if (!files.length) return;
-
-    try {
-
-        let count = 0;
-
-        for (const file of files) {
-
-            if (
-                category === "photos" &&
-                !file.type.startsWith("image/")
-            ) {
-
-                continue;
-
-            }
-
-            await saveAsset(file,category);
-
-            count++;
-
-        }
-
-        haptic();
-
-        showToast(count + " 個のファイルを追加しました");
-
-        if (category === "drive") {
-
-            refreshDriveApp();
-
-        }
-
-        if (category === "photos") {
-
-            refreshPhotosApp();
-
-        }
-
-    } catch(error) {
-
-        console.error(error);
-
-        showToast("ファイルを保存できませんでした");
-
+async function processFiles(files, category) {
+  if (!files.length) return;
+  try {
+    let count = 0;
+    for (const file of files) {
+      if (category === "photos" && !file.type.startsWith("image/")) continue;
+      await saveAsset(file, category); count++;
     }
-
+    haptic(); showToast(count + " 個のファイルを追加しました");
+    if (category === "drive") refreshDriveApp(); else refreshPhotosApp();
+  } catch (error) { console.error(error); showToast("ファイルを保存できませんでした"); }
 }
-
-
-/* =====================================================
-   28. ドラッグ＆ドロップ
-===================================================== */
-
-function dropFiles(event,category) {
-
-    event.preventDefault();
-
-    event.currentTarget.classList.remove("dragging");
-
-    const files = Array.from(
-        event.dataTransfer.files || []
-    );
-
-    processFiles(files,category);
-
+function dropFiles(event, category) {
+  event.preventDefault(); event.currentTarget.classList.remove("dragging");
+  processFiles(Array.from(event.dataTransfer.files || []), category);
 }
-
-
-/* =====================================================
-   29. ファイルダウンロード
-===================================================== */
-
 async function downloadAsset(id) {
-
-    try {
-
-        const asset = await getAsset(id);
-
-        if (!asset) {
-
-            showToast("ファイルが見つかりません");
-
-            return;
-
-        }
-
-        const url = URL.createObjectURL(asset.blob);
-
-        const anchor = document.createElement("a");
-
-        anchor.href = url;
-
-        anchor.download = asset.name;
-
-        document.body.appendChild(anchor);
-
-        anchor.click();
-
-        anchor.remove();
-
-        setTimeout(() => URL.revokeObjectURL(url),1000);
-
-        haptic();
-
-    } catch(error) {
-
-        console.error(error);
-
-        showToast("ダウンロードに失敗しました");
-
-    }
-
+  try {
+    const asset = await getAsset(id); if (!asset) { showToast("ファイルが見つかりません"); return; }
+    const url = URL.createObjectURL(asset.blob); const anchor = document.createElement("a");
+    anchor.href = url; anchor.download = asset.name; document.body.appendChild(anchor); anchor.click(); anchor.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1200); haptic();
+  } catch (error) { console.error(error); showToast("ダウンロードに失敗しました"); }
 }
-
-
-/* =====================================================
-   30. ファイル削除
-===================================================== */
-
-async function removeAsset(id,category) {
-
-    if (!confirm("このファイルを削除しますか？")) return;
-
-    try {
-
-        await deleteAsset(id);
-
-        haptic();
-
-        showToast("削除しました");
-
-        if (category === "drive") {
-
-            refreshDriveApp();
-
-        } else {
-
-            refreshPhotosApp();
-
-        }
-
-    } catch(error) {
-
-        console.error(error);
-
-        showToast("削除できませんでした");
-
-    }
-
+async function removeAsset(id, category) {
+  if (!confirm("このファイルを削除しますか？")) return;
+  try { await deleteAsset(id); haptic(); showToast("削除しました"); if (category === "drive") refreshDriveApp(); else refreshPhotosApp(); }
+  catch (error) { console.error(error); showToast("削除できませんでした"); }
 }
-
-
-/* =====================================================
-   31. 写真プレビュー
-===================================================== */
-
 async function openPhotoPreview(id) {
-
-    try {
-
-        const photo = await getAsset(id);
-
-        if (!photo) return;
-
-        if (previewObjectURL) {
-
-            URL.revokeObjectURL(previewObjectURL);
-
-        }
-
-        previewObjectURL = URL.createObjectURL(photo.blob);
-
-        document.getElementById("previewImage").src =
-            previewObjectURL;
-
-        document.getElementById("previewModal")
-            .classList.add("active");
-
-        haptic();
-
-    } catch(error) {
-
-        console.error(error);
-
-    }
-
+  try {
+    const photo = await getAsset(id); if (!photo) return;
+    if (previewObjectURL) URL.revokeObjectURL(previewObjectURL);
+    previewObjectURL = URL.createObjectURL(photo.blob);
+    document.getElementById("previewImage").src = previewObjectURL;
+    document.getElementById("previewModal").classList.add("active"); haptic();
+  } catch (error) { console.error(error); }
 }
-
-
 function closePreview() {
-
-    document.getElementById("previewModal")
-        .classList.remove("active");
-
-    document.getElementById("previewImage").src = "";
-
-    if (previewObjectURL) {
-
-        URL.revokeObjectURL(previewObjectURL);
-
-        previewObjectURL = null;
-
-    }
-
+  document.getElementById("previewModal").classList.remove("active");
+  document.getElementById("previewImage").src = "";
+  if (previewObjectURL) { URL.revokeObjectURL(previewObjectURL); previewObjectURL = null; }
 }
 
-
 /* =====================================================
-   32. ユーゲン・ヨーソの表示
+   10. Yugen Yoso pseudo assistant
 ===================================================== */
-
 function toggleAssistant(event) {
-
-    event.stopPropagation();
-
-    haptic();
-
-    document.getElementById("assistantPanel")
-        .classList.toggle("open");
-
+  event.stopPropagation(); haptic(); document.getElementById("assistantPanel").classList.toggle("open");
 }
-
-
-function closeAssistant() {
-
-    document.getElementById("assistantPanel")
-        .classList.remove("open");
-
+function closeAssistant() { document.getElementById("assistantPanel").classList.remove("open"); }
+function addAssistantMessage(message, type) {
+  const area = document.getElementById("assistantMessages");
+  const element = document.createElement("div"); element.className = "chat-message " + type; element.textContent = message;
+  area.appendChild(element); area.scrollTop = area.scrollHeight;
 }
-
-
-/* =====================================================
-   33. AIチャット表示
-===================================================== */
-
-function addAssistantMessage(message,type) {
-
-    const area = document.getElementById("assistantMessages");
-
-    const element = document.createElement("div");
-
-    element.className = "chat-message " + type;
-
-    element.textContent = message;
-
-    area.appendChild(element);
-
-    area.scrollTop = area.scrollHeight;
-
-}
-
-
-/* =====================================================
-   34. 疑似AI応答
-===================================================== */
-
 function generatePseudoAIReply(message) {
-
-    const text = message.toLowerCase();
-
-    if (
-        text.includes("検索") ||
-        text.includes("search")
-    ) {
-
-        return "検索機能を利用する場合は、画面上部のアプリ一覧から「検索」を選択してください。\n\nGoogle検索と連携しています。";
-
-    }
-
-    if (
-        text.includes("メール") ||
-        text.includes("mail")
-    ) {
-
-        return "10^100メールを開きます。\n\nメール画面では、受信トレイの閲覧、メールの作成、下書き保存を体験できます。\n\n実際の送受信にはメールサーバーが必要です。";
-
-    }
-
-    if (
-        text.includes("ドライブ") ||
-        text.includes("drive") ||
-        text.includes("ファイル")
-    ) {
-
-        return "10^100ドライブでは、ファイルをアップロードしてブラウザ内に保存できます。\n\nアプリ一覧からドライブを開いてください。";
-
-    }
-
-    if (
-        text.includes("写真") ||
-        text.includes("画像")
-    ) {
-
-        return "10^100写真では、画像をアップロードし、一覧表示やプレビューができます。\n\nアプリ一覧から写真を開いてください。";
-
-    }
-
-    if (
-        text.includes("こんにちは") ||
-        text.includes("hello")
-    ) {
-
-        return "こんにちは！本日も10^100をご利用いただきありがとうございます。\n\n何かお手伝いできることはありますか？";
-
-    }
-
-    if (
-        text.includes("あなた") ||
-        text.includes("名前")
-    ) {
-
-        return "私はユーゲン・ヨーソです。\n\n10^100の操作をお手伝いする疑似AIアシスタントです。";
-
-    }
-
-    if (
-        text.includes("ありがとう")
-    ) {
-
-        return "どういたしまして！\n\nほかにも10^100の操作で困ったことがあれば、いつでも声をかけてください。";
-
-    }
-
-    return "メッセージを受け取りました。\n\n私は10^100の操作を補助する疑似AIです。\n\n検索・メール・ドライブ・写真について質問してみてください。";
-
+  const text = message.toLowerCase();
+  if (text.includes("検索") || text.includes("search")) return "10^100 検索を開きます。検索履歴は現在のアカウントごとに保存されます。";
+  if (text.includes("メール") || text.includes("mail")) return "10^100 メールでは受信トレイ、下書き、送信済み一覧を利用できます。実際のメール送受信にはメールサーバーが必要です。";
+  if (text.includes("ドライブ") || text.includes("drive") || text.includes("ファイル")) return "10^100 ドライブではファイルをブラウザ内に保存できます。ファイルは現在のアカウントIDに紐付けられます。";
+  if (text.includes("写真") || text.includes("画像")) return "10^100 写真では画像のアップロード、一覧表示、プレビュー、削除ができます。";
+  if (text.includes("アカウント") || text.includes("同期")) return "現在はブラウザ内のローカルアカウントです。各アプリのデータは同じアカウントIDで分離していますが、別端末との同期にはサーバーが必要です。";
+  if (text.includes("名前") || text.includes("あなた")) return "私はユーゲン・ヨーソです。10^100の操作を案内する疑似AIアシスタントです。";
+  if (text.includes("こんにちは") || text.includes("hello")) return `こんにちは、${currentUser ? currentUser.displayName : "ユーザー"}さん。今日は何をお手伝いしましょうか？`;
+  if (text.includes("ありがとう")) return "どういたしまして！またいつでも声をかけてください。";
+  return "メッセージを受け取りました。私は現在、キーワードに応じて案内する疑似AIです。検索・メール・ドライブ・写真・アカウントについて質問してみてください。";
 }
-
-
-/* =====================================================
-   35. AIメッセージ送信
-===================================================== */
-
 function sendAssistant(event) {
-
-    event.preventDefault();
-
-    const input = document.getElementById("assistantInput");
-
-    const message = input.value.trim();
-
-    if (!message) return;
-
-    input.value = "";
-
-    haptic();
-
-    addAssistantMessage(message,"user");
-
-    setTimeout(() => {
-
-        const response = generatePseudoAIReply(message);
-
-        addAssistantMessage(response,"bot");
-
-    },300);
-
+  event.preventDefault();
+  const input = document.getElementById("assistantInput"); const message = input.value.trim();
+  if (!message) return; input.value = ""; haptic(); addAssistantMessage(message, "user");
+  const lower = message.toLowerCase();
+  let appToOpen = null;
+  if (lower.includes("検索を開") || lower.includes("検索画面")) appToOpen = "search";
+  else if (lower.includes("メールを開") || lower.includes("メール画面")) appToOpen = "mail";
+  else if (lower.includes("ドライブを開") || lower.includes("ドライブ画面")) appToOpen = "drive";
+  else if (lower.includes("写真を開") || lower.includes("写真画面")) appToOpen = "photos";
+  setTimeout(() => {
+    addAssistantMessage(generatePseudoAIReply(message), "bot");
+    if (appToOpen) setTimeout(() => openApp(appToOpen), 350);
+  }, 250);
 }
-
-
-function askAssistant(message) {
-
-    document.getElementById("assistantInput").value = message;
-
-    sendAssistant(new Event("submit",{
-        cancelable:true
-    }));
-
-}
-
+function askAssistant(message) { document.getElementById("assistantInput").value = message; sendAssistant(new Event("submit", { cancelable: true })); }
+document.addEventListener("click", event => {
+  const panel = document.getElementById("assistantPanel"); const toggle = document.getElementById("assistantToggle");
+  if (!panel.contains(event.target) && !toggle.contains(event.target)) closeAssistant();
+});
 
 /* =====================================================
-   36. AIパネル外側クリック
+   Scroll reveal, scroll haptics, and subtle parallax
 ===================================================== */
+const scrollObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
 
-document.addEventListener("click",event => {
-
-    const panel = document.getElementById("assistantPanel");
-
-    const toggle = document.getElementById("assistantToggle");
+    if (entry.target.classList.contains("scroll-reveal")) {
+      entry.target.classList.add("is-visible");
+    }
 
     if (
-        !panel.contains(event.target) &&
-        !toggle.contains(event.target)
+      entry.target.classList.contains("scroll-section") &&
+      entry.intersectionRatio >= 0.5
     ) {
-
-        closeAssistant();
-
+      const sectionId = entry.target.id || "section";
+      if (scrollHapticsArmed && activeScrollSection !== sectionId) {
+        activeScrollSection = sectionId;
+        haptic(9);
+      }
     }
+  });
+}, { threshold: [0.15, 0.5, 0.72] });
 
+document.querySelectorAll(".scroll-reveal, .scroll-section").forEach(element => {
+  scrollObserver.observe(element);
 });
 
+// Avoid a vibration on initial page load; arm scroll haptics after the first real scroll.
+window.addEventListener("scroll", () => {
+  scrollHapticsArmed = true;
+}, { passive: true, once: true });
 
-/* =====================================================
-   37. スクロールアニメーション
-===================================================== */
-
-const observer = new IntersectionObserver(
-
-    entries => {
-
-        entries.forEach(entry => {
-
-            if (entry.isIntersecting) {
-
-                entry.target.classList.add("show");
-
-            }
-
-        });
-
-    },
-
-    {
-        threshold: 0.15
-    }
-
-);
-
-
-document.querySelectorAll(".reveal").forEach(element => {
-
-    observer.observe(element);
-
-});
-
-
-/* =====================================================
-   38. 背景パララックス
-===================================================== */
-
-let scrollTicking = false;
-
-window.addEventListener("scroll",() => {
-
-    if (scrollTicking) return;
-
-    scrollTicking = true;
-
-    requestAnimationFrame(() => {
-
-        if (
-            !window.matchMedia(
-                "(prefers-reduced-motion: reduce)"
-            ).matches
-        ) {
-
-            const offset = window.scrollY;
-
-            document.body.style.setProperty(
-                "--scroll-offset",
-                offset * 0.12 + "px"
-            );
-
-        }
-
-        scrollTicking = false;
-
+// Very subtle logo parallax, independent of the page background image.
+let parallaxFrame = false;
+window.addEventListener("scroll", () => {
+  if (parallaxFrame || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  parallaxFrame = true;
+  requestAnimationFrame(() => {
+    const shift = Math.max(-12, Math.min(12, (window.scrollY % window.innerHeight) * 0.025));
+    document.querySelectorAll(".hero-banner").forEach(image => {
+      image.style.setProperty("--hero-parallax", `${shift}px`);
     });
+    parallaxFrame = false;
+  });
+}, { passive: true });
 
-},{passive:true});
-
-
-/* =====================================================
-   39. 初期化
-===================================================== */
-
-document.addEventListener("DOMContentLoaded",() => {
-
-    console.log("10^100 initialized.");
-
-    console.log("Assistant: ユーゲン・ヨーソ");
-
-    console.log("Background opacity: 81%");
-
-    console.log("Storage: IndexedDB + LocalStorage");
-
+document.addEventListener("DOMContentLoaded", () => {
+  restoreAccount();
+  console.log("10^100 initialized — shared local account prototype");
 });
-
 </script>
-
 </body>
 </html>
